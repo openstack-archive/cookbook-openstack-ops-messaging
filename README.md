@@ -24,9 +24,21 @@ None
 
 ## default ##
 
-- configures the messaging service selected by attributes
+Selects the messaging service selected by the attribute `['openstack']['messaging']['service']`.
+
+## rabbitmq ##
+
+Currently the only supported messaging service. Defaults to using the latest release from RabbitMQ.org. Override any attributes from the [rabbitmq cookbook](https://github.com/opscode-cookbooks/rabbitmq) to change behavior.
 
 # Attributes #
+
+* `default['openstack']['role']['messaging']` - which role should other nodes search on to find the messaging service, defaults to 'os-ops-messaging'
+* `default['openstack']['messaging']['service']` - which service to use, defaults to 'rabbitmq'
+* `default['openstack']['messaging']['host']` - messaging host
+* `default['openstack']['messaging']['port']` - messaging port
+* `default['openstack']['messaging']['user']` - messaging user, default is 'rabbit'
+* `default['openstack']['messaging']['password']` - password, default is 'password'
+* `default['openstack']['messaging']['vhost']` - messaging vhost, defaults to '/nova'
 
 # Templates #
 
@@ -37,6 +49,7 @@ License and Author
 
 |                      |                                                    |
 |:---------------------|:---------------------------------------------------|
+| **Author**           |  John Dewey (<john@dewey.ws>)                      |
 | **Author**           |  Justin Shepherd (<justin.shepherd@rackspace.com>) |
 | **Author**           |  Jason Cannavale (<jason.cannavale@rackspace.com>) |
 | **Author**           |  Ron Pedde (<ron.pedde@rackspace.com>)             |
@@ -46,9 +59,9 @@ License and Author
 | **Author**           |  Evan Callicoat (<evan.callicoat@rackspace.com>)   |
 | **Author**           |  Matt Ray (<matt@opscode.com>)                     |
 |                      |                                                    |
+| **Copyright**        |  Copyright 2012, John Dewey                        |
 | **Copyright**        |  Copyright (c) 2012-2013, Rackspace US, Inc.       |
 | **Copyright**        |  Copyright (c) 2012-2013, Opscode, Inc.            |
-
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
