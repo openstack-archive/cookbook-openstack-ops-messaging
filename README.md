@@ -14,6 +14,7 @@ Chef 11 with Ruby 1.9.x required.
 
 The following cookbooks are dependencies:
 
+* openssl
 * rabbitmq
 
 # Resources/Providers #
@@ -34,10 +35,10 @@ Currently the only supported messaging service. Defaults to using the latest rel
 
 * `default['openstack']['role']['messaging']` - which role should other nodes search on to find the messaging service, defaults to 'os-ops-messaging'
 * `default['openstack']['messaging']['service']` - which service to use, defaults to 'rabbitmq'
-* `default['openstack']['messaging']['host']` - messaging host
-* `default['openstack']['messaging']['port']` - messaging port
+* `default['openstack']['messaging']['host']` - messaging host, default is '0.0.0.0'
+* `default['openstack']['messaging']['port']` - messaging port, default is 5672
 * `default['openstack']['messaging']['user']` - messaging user, default is 'rabbit'
-* `default['openstack']['messaging']['password']` - password, default is 'password'
+* `default['openstack']['messaging']['password']` - messaging password, defaults to secure generated password
 * `default['openstack']['messaging']['vhost']` - messaging vhost, defaults to '/nova'
 
 # Templates #

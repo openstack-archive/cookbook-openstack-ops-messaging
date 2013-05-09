@@ -12,4 +12,5 @@ recipe "rabbitmq", "Configures RabbitMQ."
   supports os
 end
 
+depends "openssl", ">= 1.0.2"
 depends "rabbitmq", ">= 2.0.0"

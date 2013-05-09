@@ -18,6 +18,12 @@
 # limitations under the License.
 #
 
+::Chef::Recipe.send(:include, Opscode::OpenSSL::Password)
+
+node.set_unless['openstack']['messaging']['password'] = secure_password
+node.set_unless['rabbitmq']['address'] = '0.0.0.0'
+node.set_unless['rabbitmq']['port'] = 5672
+
 include_recipe "rabbitmq"
 include_recipe "rabbitmq::mgmt_console"
 
