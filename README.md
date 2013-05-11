@@ -33,13 +33,14 @@ Currently the only supported messaging service. Defaults to using the latest rel
 
 # Attributes #
 
-* `default['openstack']['role']['messaging']` - which role should other nodes search on to find the messaging service, defaults to 'os-ops-messaging'
-* `default['openstack']['messaging']['service']` - which service to use, defaults to 'rabbitmq'
-* `default['openstack']['messaging']['host']` - messaging host, default is '0.0.0.0'
-* `default['openstack']['messaging']['port']` - messaging port, default is 5672
-* `default['openstack']['messaging']['user']` - messaging user, default is 'rabbit'
-* `default['openstack']['messaging']['password']` - messaging password, defaults to secure generated password
-* `default['openstack']['messaging']['vhost']` - messaging vhost, defaults to '/nova'
+* `openstack['role']['messaging']` - which role should other nodes search on to find the messaging service, defaults to 'os-ops-messaging'
+
+* `openstack['messaging']['service']` - which service to use, defaults to 'rabbitmq'
+* `openstack['messaging']['host']` - messaging host, default is '0.0.0.0'
+* `openstack['messaging']['port']` - messaging port, default is 5672
+* `openstack['messaging']['user']` - messaging user, default is 'rabbit'
+* `openstack['messaging']['password']` - messaging password, defaults to secure generated password
+* `openstack['messaging']['vhost']` - messaging vhost, defaults to '/nova'
 
 # Templates #
 
