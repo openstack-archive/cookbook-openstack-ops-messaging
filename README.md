@@ -1,6 +1,6 @@
 # Description #
 
-This cookbook provides shared messaging configuration for the OpenStack **Grizzly** reference deployment provided by Chef for OpenStack. The http://github.com/mattray/chef-openstack-repo contains documentation for using this cookbook in the context of a full OpenStack deployment. It currently supports RabbitMQ and may eventually support other messaging technologies such as ActiveMQ or ZeroMQ.
+This cookbook provides shared message queue configuration for the OpenStack **Grizzly** reference deployment provided by Chef for OpenStack. The http://github.com/mattray/chef-openstack-repo contains documentation for using this cookbook in the context of a full OpenStack deployment. It currently supports RabbitMQ and will soon other queues.
 
 # Requirements #
 
@@ -14,37 +14,36 @@ Chef 11 with Ruby 1.9.x required.
 
 The following cookbooks are dependencies:
 
-* openssl
 * rabbitmq
+* openstack-common
 
 # Resources/Providers #
 
 None
 
-# Recipes #
-
-## default ##
-
-Selects the messaging service selected by the attribute `['openstack']['messaging']['service']`.
-
-## rabbitmq ##
-
-Currently the only supported messaging service. Defaults to using the latest release from RabbitMQ.org. Override any attributes from the [rabbitmq cookbook](https://github.com/opscode-cookbooks/rabbitmq) to change behavior.
-
-# Attributes #
-
-* `openstack['role']['messaging']` - which role should other nodes search on to find the messaging service, defaults to 'os-ops-messaging'
-
-* `openstack['messaging']['service']` - which service to use, defaults to 'rabbitmq'
-* `openstack['messaging']['host']` - messaging host, default is '0.0.0.0'
-* `openstack['messaging']['port']` - messaging port, default is 5672
-* `openstack['messaging']['user']` - messaging user, default is 'rabbit'
-* `openstack['messaging']['password']` - messaging password, defaults to secure generated password
-* `openstack['messaging']['vhost']` - messaging vhost, defaults to '/nova'
-
 # Templates #
 
 None
+
+# Recipes #
+
+## server ##
+
+- message queue server configuration, selected by attributes
+
+## rabbitmq-server ##
+
+- configures the RabbitMQ server for OpenStack
+
+# Attributes #
+
+* `openstack['messaging']['server_role']` - the role name to search for the messaging service
+* `openstack['messaging']['service']` - the messaging service to use; currently supports RabbitMQ
+
+* `openstack['messaging']['rabbitmq_options']['port']` - the port to use for RabbitMQ; default 5672
+* `openstack['messaging']['rabbitmq_options']['address']` - the address for RabbitMQ to listen on; default 0.0.0.0
+* `openstack['messaging']['rabbitmq_options']['user']` - the RabbitMQ user to use for OpenStack; default 'guest'
+* `openstack['messaging']['rabbitmq_options']['vhost']` - the RabbitMQ vhost to use for OpenStack; default '/'
 
 License and Author
 ==================
@@ -52,18 +51,13 @@ License and Author
 |                      |                                                    |
 |:---------------------|:---------------------------------------------------|
 | **Author**           |  John Dewey (<john@dewey.ws>)                      |
-| **Author**           |  Justin Shepherd (<justin.shepherd@rackspace.com>) |
-| **Author**           |  Jason Cannavale (<jason.cannavale@rackspace.com>) |
-| **Author**           |  Ron Pedde (<ron.pedde@rackspace.com>)             |
-| **Author**           |  Joseph Breu (<joseph.breu@rackspace.com>)         |
-| **Author**           |  William Kelly (<william.kelly@rackspace.com>)     |
-| **Author**           |  Darren Birkett (<darren.birkett@rackspace.co.uk>) |
-| **Author**           |  Evan Callicoat (<evan.callicoat@rackspace.com>)   |
 | **Author**           |  Matt Ray (<matt@opscode.com>)                     |
+| **Author**           |  Craig Tracey (<craigtracey@gmail.com>)            |
 |                      |                                                    |
-| **Copyright**        |  Copyright 2012, John Dewey                        |
-| **Copyright**        |  Copyright (c) 2012-2013, Rackspace US, Inc.       |
-| **Copyright**        |  Copyright (c) 2012-2013, Opscode, Inc.            |
+| **Copyright**        |  Copyright (c) 2012, John Dewey                    |
+| **Copyright**        |  Copyright (c) 2013, Opscode, Inc.                 |
+| **Copyright**        |  Copyright (c) 2013, Craig Tracey                  |
+
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
