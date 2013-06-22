@@ -14,8 +14,12 @@ Chef 11 with Ruby 1.9.x required.
 
 The following cookbooks are dependencies:
 
-* rabbitmq
 * openstack-common
+* rabbitmq
+
+# Usage #
+
+The usage of this cookbook is optional, you may choose to set up your own messaging service without using this cookbook. If you choose to do so, you will need to provide all of the attributes listed under the [Attributes](#attributes).
 
 # Resources/Providers #
 
@@ -37,13 +41,23 @@ None
 
 # Attributes #
 
-* `openstack['messaging']['server_role']` - the role name to search for the messaging service
-* `openstack['messaging']['service']` - the messaging service to use; currently supports RabbitMQ
+* `openstack["mq"]["server_role"]` - which role should other nodes search on to find the messaging service, defaults to 'os-ops-messaging'
+* `openstack["mq"]["service_type"]` - which service to use, defaults to 'rabbitmq'
+* `openstack["mq"]["bind_interface"]` - bind to interfaces IPv4 address
+* `openstack["mq"]["port"]` - which service port to use
 
-* `openstack['messaging']['rabbitmq_options']['port']` - the port to use for RabbitMQ; default 5672
-* `openstack['messaging']['rabbitmq_options']['address']` - the address for RabbitMQ to listen on; default 0.0.0.0
-* `openstack['messaging']['rabbitmq_options']['user']` - the RabbitMQ user to use for OpenStack; default 'guest'
-* `openstack['messaging']['rabbitmq_options']['vhost']` - the RabbitMQ vhost to use for OpenStack; default '/'
+Testing
+=====
+
+This cookbook uses [bundler](http://gembundler.com/), [berkshelf](http://berkshelf.com/), and [strainer](https://github.com/customink/strainer) to isolate dependencies and run tests.
+
+Tests are defined in Strainerfile.
+
+To run tests:
+
+    $ bundle install # install gem dependencies
+    $ bundle exec berks install # install cookbook dependencies
+    $ bundle exec strainer test # run tests
 
 License and Author
 ==================
@@ -54,9 +68,9 @@ License and Author
 | **Author**           |  Matt Ray (<matt@opscode.com>)                     |
 | **Author**           |  Craig Tracey (<craigtracey@gmail.com>)            |
 |                      |                                                    |
-| **Copyright**        |  Copyright (c) 2012, John Dewey                    |
 | **Copyright**        |  Copyright (c) 2013, Opscode, Inc.                 |
 | **Copyright**        |  Copyright (c) 2013, Craig Tracey                  |
+| **Copyright**        |  Copyright (c) 2013, AT&T Services, Inc.           |
 
 
 Licensed under the Apache License, Version 2.0 (the "License");

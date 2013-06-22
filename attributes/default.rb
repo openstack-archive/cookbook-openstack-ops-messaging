@@ -1,11 +1,24 @@
-default['openstack']['messaging']['server_role'] = 'os-ops-messaging'
-default['openstack']['messaging']['service'] = 'rabbitmq'
+#
+# Cookbook Name:: openstack-ops-messaging
+# Recipe:: default
+#
+# Copyright 2013, AT&T Services, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 
-case default['openstack']['messaging']['service']
-when "rabbitmq"
-  default['openstack']['messaging']['rabbitmq_options'] = {}
-  default['openstack']['messaging']['rabbitmq_options']['port'] = 5672
-  default['openstack']['messaging']['rabbitmq_options']['address'] = "0.0.0.0"
-  default['openstack']['messaging']['rabbitmq_options']['user'] = "guest"
-  default['openstack']['messaging']['rabbitmq_options']['vhost'] = "/"
-end
+default["openstack"]["mq"]["bind_interface"] = "lo"
+# TODO(retr0h): Delete when these attributes are merged into openstack-common
+default["openstack"]["mq"]["server_role"] = "os-ops-messaging"
+default["openstack"]["mq"]["service_type"] = "rabbitmq"
+default["openstack"]["mq"]["port"] = "5672"

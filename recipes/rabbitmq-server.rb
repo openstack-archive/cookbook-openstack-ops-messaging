@@ -2,10 +2,8 @@
 # Cookbook Name:: openstack-ops-messaging
 # Recipe:: rabbitmq-server
 #
-# Copyright 2012, John Dewey
-# Copyright 2013, Opscode, Inc.
+# Copyright 2013, AT&T Services, Inc.
 # Copyright 2013, Craig Tracey <craigtracey@gmail.com>
-#
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,45 +22,78 @@ class ::Chef::Recipe
   include ::Openstack
 end
 
-node.set["rabbitmq"]["port"] = node["openstack"]["messaging"]["rabbitmq_options"]["port"]
-node.set["rabbitmq"]["address"] = node["openstack"]["messaging"]["rabbitmq_options"]["address"]
-node.set["rabbitmq"]["use_distro_version"] = true
+rabbit_server_role = node["openstack"]["mq"]["server_role"]
+user = node["openstack"]["mq"]["user"]
+pass = user_password user
+cookie = service_password "rabbit_cookie"
+vhost = node["openstack"]["mq"]["vhost"]
+bind_interface = node["openstack"]["mq"]["bind_interface"]
+listen_address = address_for node["openstack"]["mq"]["bind_interface"]
 
-include_recipe "rabbitmq::default"
+# Used by OpenStack#rabbit_servers/#rabbit_server
+node.set["openstack"]["mq"]["listen"] = listen_address
+
+node.override["rabbitmq"]["port"] = node["openstack"]["mq"]["port"]
+node.override["rabbitmq"]["address"] = listen_address
+node.override["rabbitmq"]["default_user"] = user
+node.override["rabbitmq"]["default_pass"] = pass
+node.override["rabbitmq"]["erlang_cookie"] = cookie
+node.override["rabbitmq"]["use_distro_version"] = true
+node.override["rabbitmq"]["cluster"] = true
+qs = "roles:#{rabbit_server_role} AND environment:#{node.chef_environment}"
+node.override["rabbitmq"]["cluster_disk_nodes"] = search(:node, qs).map do |n|
+  "#{user}@#{n['hostname']}"
+end
+
+include_recipe "rabbitmq"
 include_recipe "rabbitmq::mgmt_console"
 
-rabbit_password = user_password "rabbit"
-rabbit_user = node["openstack"]["messaging"]["rabbitmq_options"]["user"]
-rabbit_vhost = node["openstack"]["messaging"]["rabbitmq_options"]["vhost"]
-
-# remove the guest user if we dont need it
 rabbitmq_user "remove rabbit guest user" do
-  user 'guest'
+  user "guest"
   action :delete
-  not_if { rabbit_user.eql?('guest') }
+
+  not_if { user == "guest" }
 end
 
 rabbitmq_user "add openstack rabbit user" do
-  user rabbit_user
-  password rabbit_password
+  user user
+  password pass
+
   action :add
 end
 
 rabbitmq_vhost "add openstack rabbit vhost" do
-  vhost rabbit_vhost
+  vhost vhost
+
   action :add
 end
 
 rabbitmq_user "set openstack user permissions" do
-  user rabbit_user
-  vhost rabbit_vhost
+  user user
+  vhost vhost
   permissions '.* .* .*'
   action :set_permissions
 end
 
 # Necessary for graphing.
 rabbitmq_user "set rabbit administrator tag" do
-  user rabbit_user
+  user user
   tag "administrator"
+
   action :set_tags
+end
+
+# Remove the mnesia database. This is necessary so the nodes
+# in the cluster will be able to recognize one another.
+# TODO(retr0h): This should be handled upstream.
+execute "Reset mnesia" do
+  cwd "/var/lib/rabbitmq"
+  command <<-EOH.gsub(/^\s+/, "")
+    service rabbitmq-server stop;
+    rm -rf mnesia/;
+    touch .reset_mnesia_database;
+    service rabbitmq-server start
+  EOH
+
+  not_if { ::File.exists? "/var/lib/rabbitmq/.reset_mnesia_database" }
 end

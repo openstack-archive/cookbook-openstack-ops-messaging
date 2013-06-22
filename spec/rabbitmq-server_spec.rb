@@ -1,119 +1,160 @@
-require_relative 'spec_helper'
+require_relative "spec_helper"
 
-describe 'openstack-ops-messaging::rabbitmq-server' do
-  describe 'ubuntu' do
+describe "openstack-ops-messaging::rabbitmq-server" do
+  before { ops_messaging_stubs }
+  describe "ubuntu" do
     before do
-      messaging_stubs
-      @chef_run = ::ChefSpec::ChefRunner.new(::UBUNTU_OPTS) do |node|
-        node.set['lsb'] = {'codename' => 'precise'}
-        node.set['openstack']= {'messaging' => {
-            'service' => 'rabbitmq',
-            'rabbitmq_options' => {
-              'user' => 'openstack_rabbit_user',
-              'vhost' => '/openstack_rabbit_vhost'
-            }
-          }
-        }
-        node.set['rabbitmq'] = {
-          'erlang_cookie_path' => '/path/to/nowhere'
+      @chef_run = ::ChefSpec::ChefRunner.new(::UBUNTU_OPTS) do |n|
+        n.set["openstack"]["mq"] = {
+          "user" => "rabbit-user",
+          "vhost" => "/test-vhost"
         }
       end
-
-      @rabbitmq_user_mock = double "rabbitmq_user"
-      @rabbitmq_vhost_mock = double "rabbitmq_vhost"
+      @chef_run.converge "openstack-ops-messaging::rabbitmq-server"
     end
 
-    it "rabbitmq-server basic test" do
-      @chef_run.converge "openstack-ops-messaging::rabbitmq-server"
+    it "overrides default rabbit attributes" do
+      expect(@chef_run.node["openstack"]["mq"]["port"]).to eql "5672"
+      expect(@chef_run.node["openstack"]["mq"]["listen"]).to eql "127.0.0.1"
+      expect(@chef_run.node["rabbitmq"]["address"]).to eql "127.0.0.1"
+      expect(@chef_run.node["rabbitmq"]["default_user"]).to eql "rabbit-user"
+      expect(@chef_run.node['rabbitmq']['default_pass']).to eql "rabbit-pass"
+      expect(@chef_run.node['rabbitmq']['erlang_cookie']).to eql(
+        "erlang-cookie"
+      )
+      expect(@chef_run.node['rabbitmq']['cluster']).to be_true
+      expect(@chef_run.node['rabbitmq']['cluster_disk_nodes']).to eql(
+        ["rabbit-user@host1", "rabbit-user@host2"]
+      )
+    end
 
-      expect(@chef_run).to include_recipe "openstack-ops-messaging::rabbitmq-server"
-      expect(@chef_run).to include_recipe "rabbitmq::default"
+    it "includes rabbit recipes" do
+      expect(@chef_run).to include_recipe "rabbitmq"
       expect(@chef_run).to include_recipe "rabbitmq::mgmt_console"
     end
 
-    it "removes the rabbit guest user" do
-      ::Chef::Recipe.any_instance.stub(:rabbitmq_user)
-      ::Chef::Recipe.any_instance.should_receive(:rabbitmq_user).
-        with("remove rabbit guest user") do |&arg|
-          @rabbitmq_user_mock.should_receive(:user).
-            with "guest"
-          @rabbitmq_user_mock.should_receive(:action).
-            with :delete
-          @rabbitmq_user_mock.should_receive(:not_if)
+    describe "lwrps" do
+      it "deletes guest user" do
+        resource = @chef_run.find_resource(
+          "rabbitmq_user",
+          "remove rabbit guest user"
+        ).to_hash
 
-          @rabbitmq_user_mock.instance_eval &arg
+        expect(resource).to include(
+          :user => "guest",
+          :action => [:delete]
+        )
+      end
+
+      it "doesn't delete guest user" do
+        opts = ::UBUNTU_OPTS.merge(:evaluate_guards => true)
+        chef_run = ::ChefSpec::ChefRunner.new(opts) do |n|
+          n.set["openstack"]["mq"] = {
+            "user" => "guest",
+            "vhost" => "/test-vhost"
+          }
         end
+        chef_run.converge "openstack-ops-messaging::rabbitmq-server"
 
-      @chef_run.converge "openstack-ops-messaging::rabbitmq-server"
+        resource = chef_run.find_resource(
+          "rabbitmq_user",
+          "remove rabbit guest user"
+        )
+
+        expect(resource).to be_nil
+      end
+
+      it "adds user" do
+        resource = @chef_run.find_resource(
+          "rabbitmq_user",
+          "add openstack rabbit user"
+        ).to_hash
+
+        expect(resource).to include(
+          :user => "rabbit-user",
+          :password => "rabbit-pass",
+          :action => [:add]
+        )
+      end
+
+      it "adds vhost" do
+        resource = @chef_run.find_resource(
+          "rabbitmq_vhost",
+          "add openstack rabbit vhost"
+        ).to_hash
+
+        expect(resource).to include(
+          :vhost => "/test-vhost",
+          :action => [:add]
+        )
+      end
+
+      it "sets user permissions" do
+        resource = @chef_run.find_resource(
+          "rabbitmq_user",
+          "set openstack user permissions"
+        ).to_hash
+
+        expect(resource).to include(
+          :user => "rabbit-user",
+          :vhost => "/test-vhost",
+          :permissions => '.* .* .*',
+          :action => [:set_permissions]
+        )
+      end
+
+      it "sets administrator tag" do
+        resource = @chef_run.find_resource(
+          "rabbitmq_user",
+          "set rabbit administrator tag"
+        ).to_hash
+
+        expect(resource).to include(
+          :user => "rabbit-user",
+          :tag => "administrator",
+          :action => [:set_tags]
+        )
+      end
     end
 
-    it "adds the openstack rabbit user" do
-      ::Chef::Recipe.any_instance.stub(:rabbitmq_user)
-      ::Chef::Recipe.any_instance.should_receive(:rabbitmq_user).
-        with("add openstack rabbit user") do |&arg|
-          @rabbitmq_user_mock.should_receive(:user).
-            with "openstack_rabbit_user"
-          @rabbitmq_user_mock.should_receive(:password).
-            with "rabbitpassword"
-          @rabbitmq_user_mock.should_receive(:action).
-            with :add
-
-          @rabbitmq_user_mock.instance_eval &arg
+    describe "mnesia" do
+      before do
+        ::File.stub(:exists?).and_call_original
+        opts = ::UBUNTU_OPTS.merge(:evaluate_guards => true)
+        @chef_run = ::ChefSpec::ChefRunner.new opts do |n|
+          n.set["openstack"]["mq"] = {
+            "user" => "rabbit-user",
+            "vhost" => "/test-vhost"
+          }
         end
+        @cmd = <<-EOH.gsub(/^\s+/, "")
+          service rabbitmq-server stop;
+          rm -rf mnesia/;
+          touch .reset_mnesia_database;
+          service rabbitmq-server start
+        EOH
+        @file = "/var/lib/rabbitmq/.reset_mnesia_database"
+      end
 
-      @chef_run.converge "openstack-ops-messaging::rabbitmq-server"
+      it "resets database" do
+        ::File.should_receive(:exists?).
+          with(@file).
+          and_return(false)
+        @chef_run.converge "openstack-ops-messaging::rabbitmq-server"
+
+        expect(@chef_run).to execute_command(@cmd).with(
+          :cwd => "/var/lib/rabbitmq"
+        )
+      end
+
+      it "doesn't reset database when already did" do
+        ::File.should_receive(:exists?).
+          with(@file).
+          and_return(true)
+        @chef_run.converge "openstack-ops-messaging::rabbitmq-server"
+
+        expect(@chef_run).not_to execute_command(@cmd)
+      end
     end
-
-    it "adds the openstack rabbit vhost" do
-      ::Chef::Recipe.any_instance.stub(:rabbitmq_vhost)
-      ::Chef::Recipe.any_instance.should_receive(:rabbitmq_vhost).
-        with("add openstack rabbit vhost") do |&arg|
-          @rabbitmq_vhost_mock.should_receive(:vhost).
-            with "/openstack_rabbit_vhost"
-          @rabbitmq_vhost_mock.should_receive(:action).
-            with :add
-
-          @rabbitmq_vhost_mock.instance_eval &arg
-        end
-
-      @chef_run.converge "openstack-ops-messaging::rabbitmq-server"
-    end
-
-    it "set openstack user permissions" do
-      ::Chef::Recipe.any_instance.stub(:rabbitmq_user)
-      ::Chef::Recipe.any_instance.should_receive(:rabbitmq_user).
-        with("set openstack user permissions") do |&arg|
-          @rabbitmq_user_mock.should_receive(:user).
-            with "openstack_rabbit_user"
-          @rabbitmq_user_mock.should_receive(:vhost).
-            with "/openstack_rabbit_vhost"
-          @rabbitmq_user_mock.should_receive(:permissions).
-            with ".* .* .*"
-          @rabbitmq_user_mock.should_receive(:action).
-            with :set_permissions
-
-          @rabbitmq_user_mock.instance_eval &arg
-        end
-
-      @chef_run.converge "openstack-ops-messaging::rabbitmq-server"
-    end
-
-    it "set rabbit administrator tag" do
-      ::Chef::Recipe.any_instance.stub(:rabbitmq_user)
-      ::Chef::Recipe.any_instance.should_receive(:rabbitmq_user).
-        with("set rabbit administrator tag") do |&arg|
-          @rabbitmq_user_mock.should_receive(:user).
-            with "openstack_rabbit_user"
-          @rabbitmq_user_mock.should_receive(:tag).
-            with "administrator"
-          @rabbitmq_user_mock.should_receive(:action).
-            with :set_tags
-
-          @rabbitmq_user_mock.instance_eval &arg
-        end
-
-      @chef_run.converge "openstack-ops-messaging::rabbitmq-server"
-    end
-
   end
 end
