@@ -2,6 +2,7 @@
 # Cookbook Name:: openstack-ops-messaging
 # Recipe:: rabbitmq-server
 #
+# Copyright 2013, Opscode, Inc.
 # Copyright 2013, AT&T Services, Inc.
 # Copyright 2013, Craig Tracey <craigtracey@gmail.com>
 #
@@ -25,7 +26,6 @@ end
 rabbit_server_role = node["openstack"]["mq"]["server_role"]
 user = node["openstack"]["mq"]["user"]
 pass = user_password user
-cookie = service_password "rabbit_cookie"
 vhost = node["openstack"]["mq"]["vhost"]
 bind_interface = node["openstack"]["mq"]["bind_interface"]
 listen_address = address_for node["openstack"]["mq"]["bind_interface"]
@@ -37,12 +37,16 @@ node.override["rabbitmq"]["port"] = node["openstack"]["mq"]["port"]
 node.override["rabbitmq"]["address"] = listen_address
 node.override["rabbitmq"]["default_user"] = user
 node.override["rabbitmq"]["default_pass"] = pass
-node.override["rabbitmq"]["erlang_cookie"] = cookie
 node.override["rabbitmq"]["use_distro_version"] = true
-node.override["rabbitmq"]["cluster"] = true
-qs = "roles:#{rabbit_server_role} AND environment:#{node.chef_environment}"
-node.override["rabbitmq"]["cluster_disk_nodes"] = search(:node, qs).map do |n|
-  "#{user}@#{n['hostname']}"
+
+# Clustering
+if node["openstack"]["mq"]["cluster"]
+  node.override["rabbitmq"]["cluster"] = node["openstack"]["mq"]["cluster"]
+  node.override["rabbitmq"]["erlang_cookie"] = service_password "rabbit_cookie"
+  qs = "roles:#{rabbit_server_role} AND environment:#{node.chef_environment}"
+  node.override["rabbitmq"]["cluster_disk_nodes"] = search(:node, qs).map do |n|
+    "#{user}@#{n['hostname']}"
+  end
 end
 
 include_recipe "rabbitmq"
@@ -85,7 +89,8 @@ end
 
 # Remove the mnesia database. This is necessary so the nodes
 # in the cluster will be able to recognize one another.
-# TODO(retr0h): This should be handled upstream.
+# TODO(retr0h): This should be handled upstream, and in a
+# non-distro specific way (e.g.) `rabbitmqctl reset`.
 execute "Reset mnesia" do
   cwd "/var/lib/rabbitmq"
   command <<-EOH.gsub(/^\s+/, "")
@@ -96,4 +101,5 @@ execute "Reset mnesia" do
   EOH
 
   not_if { ::File.exists? "/var/lib/rabbitmq/.reset_mnesia_database" }
+  only_if { node["openstack"]["mq"]["cluster"] }
 end

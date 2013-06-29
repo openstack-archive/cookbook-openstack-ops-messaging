@@ -19,13 +19,34 @@ describe "openstack-ops-messaging::rabbitmq-server" do
       expect(@chef_run.node["rabbitmq"]["address"]).to eql "127.0.0.1"
       expect(@chef_run.node["rabbitmq"]["default_user"]).to eql "rabbit-user"
       expect(@chef_run.node['rabbitmq']['default_pass']).to eql "rabbit-pass"
-      expect(@chef_run.node['rabbitmq']['erlang_cookie']).to eql(
-        "erlang-cookie"
-      )
-      expect(@chef_run.node['rabbitmq']['cluster']).to be_true
-      expect(@chef_run.node['rabbitmq']['cluster_disk_nodes']).to eql(
-        ["rabbit-user@host1", "rabbit-user@host2"]
-      )
+    end
+
+    describe "cluster" do
+      before do
+        @chef_run = ::ChefSpec::ChefRunner.new(::UBUNTU_OPTS) do |n|
+          n.set["openstack"]["mq"] = {
+            "user" => "rabbit-user",
+            "cluster" => true
+          }
+        end
+        @chef_run.converge "openstack-ops-messaging::rabbitmq-server"
+      end
+
+      it "overrides cluster" do
+        expect(@chef_run.node['rabbitmq']['cluster']).to be_true
+      end
+
+      it "overrides erlang_cookie" do
+        expect(@chef_run.node['rabbitmq']['erlang_cookie']).to eql(
+          "erlang-cookie"
+        )
+      end
+
+      it "overrides cluster_disk_nodes" do
+        expect(@chef_run.node['rabbitmq']['cluster_disk_nodes']).to eql(
+          ["rabbit-user@host1", "rabbit-user@host2"]
+        )
+      end
     end
 
     it "includes rabbit recipes" do
@@ -119,41 +140,60 @@ describe "openstack-ops-messaging::rabbitmq-server" do
 
     describe "mnesia" do
       before do
-        ::File.stub(:exists?).and_call_original
-        opts = ::UBUNTU_OPTS.merge(:evaluate_guards => true)
-        @chef_run = ::ChefSpec::ChefRunner.new opts do |n|
-          n.set["openstack"]["mq"] = {
-            "user" => "rabbit-user",
-            "vhost" => "/test-vhost"
-          }
-        end
         @cmd = <<-EOH.gsub(/^\s+/, "")
           service rabbitmq-server stop;
           rm -rf mnesia/;
           touch .reset_mnesia_database;
           service rabbitmq-server start
         EOH
-        @file = "/var/lib/rabbitmq/.reset_mnesia_database"
       end
 
-      it "resets database" do
-        ::File.should_receive(:exists?).
-          with(@file).
-          and_return(false)
-        @chef_run.converge "openstack-ops-messaging::rabbitmq-server"
+      it "doesn't reset the database" do
+        opts = ::UBUNTU_OPTS.merge(:evaluate_guards => true)
+        chef_run = ::ChefSpec::ChefRunner.new opts do |n|
+          n.set["openstack"]["mq"] = {
+            "user" => "rabbit-user",
+            "vhost" => "/test-vhost"
+          }
+        end
+        chef_run.converge "openstack-ops-messaging::rabbitmq-server"
 
-        expect(@chef_run).to execute_command(@cmd).with(
-          :cwd => "/var/lib/rabbitmq"
-        )
+        expect(chef_run).not_to execute_command(@cmd)
       end
 
-      it "doesn't reset database when already did" do
-        ::File.should_receive(:exists?).
-          with(@file).
-          and_return(true)
-        @chef_run.converge "openstack-ops-messaging::rabbitmq-server"
+      describe "cluster" do
+        before do
+          ::File.stub(:exists?).and_call_original
+          opts = ::UBUNTU_OPTS.merge(:evaluate_guards => true)
+          @chef_run = ::ChefSpec::ChefRunner.new opts do |n|
+            n.set["openstack"]["mq"] = {
+              "user" => "rabbit-user",
+              "vhost" => "/test-vhost",
+              "cluster" => true
+            }
+          end
+          @file = "/var/lib/rabbitmq/.reset_mnesia_database"
+        end
 
-        expect(@chef_run).not_to execute_command(@cmd)
+        it "resets database" do
+          ::File.should_receive(:exists?).
+            with(@file).
+            and_return(false)
+          @chef_run.converge "openstack-ops-messaging::rabbitmq-server"
+
+          expect(@chef_run).to execute_command(@cmd).with(
+            :cwd => "/var/lib/rabbitmq"
+          )
+        end
+
+        it "doesn't reset database when already did" do
+          ::File.should_receive(:exists?).
+            with(@file).
+            and_return(true)
+          @chef_run.converge "openstack-ops-messaging::rabbitmq-server"
+
+          expect(@chef_run).not_to execute_command(@cmd)
+        end
       end
     end
   end

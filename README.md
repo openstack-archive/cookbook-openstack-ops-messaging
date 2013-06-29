@@ -44,6 +44,7 @@ None
 * `openstack["mq"]["server_role"]` - which role should other nodes search on to find the messaging service, defaults to 'os-ops-messaging'
 * `openstack["mq"]["service_type"]` - which service to use, defaults to 'rabbitmq'
 * `openstack["mq"]["bind_interface"]` - bind to interfaces IPv4 address
+* `openstack["mq"]["cluster"]` - whether or not to cluster rabbit, defaults to 'false'
 * `openstack["mq"]["port"]` - which service port to use
 
 Testing
