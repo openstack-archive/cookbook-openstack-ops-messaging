@@ -19,7 +19,3 @@
 
 default["openstack"]["mq"]["bind_interface"] = "lo"
 default["openstack"]["mq"]["cluster"] = false
-# TODO(retr0h): Delete when these attributes are merged into openstack-common
-default["openstack"]["mq"]["server_role"] = "os-ops-messaging"
-default["openstack"]["mq"]["service_type"] = "rabbitmq"
-default["openstack"]["mq"]["port"] = "5672"

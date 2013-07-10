@@ -4,12 +4,7 @@ describe "openstack-ops-messaging::rabbitmq-server" do
   before { ops_messaging_stubs }
   describe "ubuntu" do
     before do
-      @chef_run = ::ChefSpec::ChefRunner.new(::UBUNTU_OPTS) do |n|
-        n.set["openstack"]["mq"] = {
-          "user" => "rabbit-user",
-          "vhost" => "/test-vhost"
-        }
-      end
+      @chef_run = ::ChefSpec::ChefRunner.new ::UBUNTU_OPTS
       @chef_run.converge "openstack-ops-messaging::rabbitmq-server"
     end
 
@@ -17,7 +12,7 @@ describe "openstack-ops-messaging::rabbitmq-server" do
       expect(@chef_run.node["openstack"]["mq"]["port"]).to eql "5672"
       expect(@chef_run.node["openstack"]["mq"]["listen"]).to eql "127.0.0.1"
       expect(@chef_run.node["rabbitmq"]["address"]).to eql "127.0.0.1"
-      expect(@chef_run.node["rabbitmq"]["default_user"]).to eql "rabbit-user"
+      expect(@chef_run.node["rabbitmq"]["default_user"]).to eql "guest"
       expect(@chef_run.node['rabbitmq']['default_pass']).to eql "rabbit-pass"
     end
 
@@ -25,7 +20,6 @@ describe "openstack-ops-messaging::rabbitmq-server" do
       before do
         @chef_run = ::ChefSpec::ChefRunner.new(::UBUNTU_OPTS) do |n|
           n.set["openstack"]["mq"] = {
-            "user" => "rabbit-user",
             "cluster" => true
           }
         end
@@ -44,7 +38,7 @@ describe "openstack-ops-messaging::rabbitmq-server" do
 
       it "overrides cluster_disk_nodes" do
         expect(@chef_run.node['rabbitmq']['cluster_disk_nodes']).to eql(
-          ["rabbit-user@host1", "rabbit-user@host2"]
+          ["guest@host1", "guest@host2"]
         )
       end
     end
@@ -69,12 +63,7 @@ describe "openstack-ops-messaging::rabbitmq-server" do
 
       it "doesn't delete guest user" do
         opts = ::UBUNTU_OPTS.merge(:evaluate_guards => true)
-        chef_run = ::ChefSpec::ChefRunner.new(opts) do |n|
-          n.set["openstack"]["mq"] = {
-            "user" => "guest",
-            "vhost" => "/test-vhost"
-          }
-        end
+        chef_run = ::ChefSpec::ChefRunner.new opts
         chef_run.converge "openstack-ops-messaging::rabbitmq-server"
 
         resource = chef_run.find_resource(
@@ -92,7 +81,7 @@ describe "openstack-ops-messaging::rabbitmq-server" do
         ).to_hash
 
         expect(resource).to include(
-          :user => "rabbit-user",
+          :user => "guest",
           :password => "rabbit-pass",
           :action => [:add]
         )
@@ -105,7 +94,7 @@ describe "openstack-ops-messaging::rabbitmq-server" do
         ).to_hash
 
         expect(resource).to include(
-          :vhost => "/test-vhost",
+          :vhost => "/",
           :action => [:add]
         )
       end
@@ -117,8 +106,8 @@ describe "openstack-ops-messaging::rabbitmq-server" do
         ).to_hash
 
         expect(resource).to include(
-          :user => "rabbit-user",
-          :vhost => "/test-vhost",
+          :user => "guest",
+          :vhost => "/",
           :permissions => '.* .* .*',
           :action => [:set_permissions]
         )
@@ -131,7 +120,7 @@ describe "openstack-ops-messaging::rabbitmq-server" do
         ).to_hash
 
         expect(resource).to include(
-          :user => "rabbit-user",
+          :user => "guest",
           :tag => "administrator",
           :action => [:set_tags]
         )
@@ -150,12 +139,7 @@ describe "openstack-ops-messaging::rabbitmq-server" do
 
       it "doesn't reset the database" do
         opts = ::UBUNTU_OPTS.merge(:evaluate_guards => true)
-        chef_run = ::ChefSpec::ChefRunner.new opts do |n|
-          n.set["openstack"]["mq"] = {
-            "user" => "rabbit-user",
-            "vhost" => "/test-vhost"
-          }
-        end
+        chef_run = ::ChefSpec::ChefRunner.new opts
         chef_run.converge "openstack-ops-messaging::rabbitmq-server"
 
         expect(chef_run).not_to execute_command(@cmd)
@@ -167,8 +151,6 @@ describe "openstack-ops-messaging::rabbitmq-server" do
           opts = ::UBUNTU_OPTS.merge(:evaluate_guards => true)
           @chef_run = ::ChefSpec::ChefRunner.new opts do |n|
             n.set["openstack"]["mq"] = {
-              "user" => "rabbit-user",
-              "vhost" => "/test-vhost",
               "cluster" => true
             }
           end
