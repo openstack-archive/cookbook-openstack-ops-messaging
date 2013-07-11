@@ -17,7 +17,7 @@ def ops_messaging_stubs
     with("lo").
     and_return "127.0.0.1"
   ::Chef::Recipe.any_instance.stub(:search).
-    with(:node, "roles:os-ops-messaging AND environment:_default").
+    with(:node, "roles:os-ops-messaging AND chef_environment:_default").
     and_return [
       { 'hostname' => 'host1' },
       { 'hostname' => 'host2' }

@@ -43,7 +43,7 @@ node.override["rabbitmq"]["use_distro_version"] = true
 if node["openstack"]["mq"]["cluster"]
   node.override["rabbitmq"]["cluster"] = node["openstack"]["mq"]["cluster"]
   node.override["rabbitmq"]["erlang_cookie"] = service_password "rabbit_cookie"
-  qs = "roles:#{rabbit_server_role} AND environment:#{node.chef_environment}"
+  qs = "roles:#{rabbit_server_role} AND chef_environment:#{node.chef_environment}"
   node.override["rabbitmq"]["cluster_disk_nodes"] = search(:node, qs).map do |n|
     "#{user}@#{n['hostname']}"
   end
