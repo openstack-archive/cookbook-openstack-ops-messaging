@@ -126,57 +126,5 @@ describe "openstack-ops-messaging::rabbitmq-server" do
         )
       end
     end
-
-    describe "mnesia" do
-      before do
-        @cmd = <<-EOH.gsub(/^\s+/, "")
-          service rabbitmq-server stop;
-          rm -rf mnesia/;
-          touch .reset_mnesia_database;
-          service rabbitmq-server start
-        EOH
-      end
-
-      it "doesn't reset the database" do
-        opts = ::UBUNTU_OPTS.merge(:evaluate_guards => true)
-        chef_run = ::ChefSpec::ChefRunner.new opts
-        chef_run.converge "openstack-ops-messaging::rabbitmq-server"
-
-        expect(chef_run).not_to execute_command(@cmd)
-      end
-
-      describe "cluster" do
-        before do
-          ::File.stub(:exists?).and_call_original
-          opts = ::UBUNTU_OPTS.merge(:evaluate_guards => true)
-          @chef_run = ::ChefSpec::ChefRunner.new opts do |n|
-            n.set["openstack"]["mq"] = {
-              "cluster" => true
-            }
-          end
-          @file = "/var/lib/rabbitmq/.reset_mnesia_database"
-        end
-
-        it "resets database" do
-          ::File.should_receive(:exists?).
-            with(@file).
-            and_return(false)
-          @chef_run.converge "openstack-ops-messaging::rabbitmq-server"
-
-          expect(@chef_run).to execute_command(@cmd).with(
-            :cwd => "/var/lib/rabbitmq"
-          )
-        end
-
-        it "doesn't reset database when already did" do
-          ::File.should_receive(:exists?).
-            with(@file).
-            and_return(true)
-          @chef_run.converge "openstack-ops-messaging::rabbitmq-server"
-
-          expect(@chef_run).not_to execute_command(@cmd)
-        end
-      end
-    end
   end
 end

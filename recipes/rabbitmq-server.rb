@@ -86,20 +86,3 @@ rabbitmq_user "set rabbit administrator tag" do
 
   action :set_tags
 end
-
-# Remove the mnesia database. This is necessary so the nodes
-# in the cluster will be able to recognize one another.
-# TODO(retr0h): This should be handled upstream, and in a
-# non-distro specific way (e.g.) `rabbitmqctl reset`.
-execute "Reset mnesia" do
-  cwd "/var/lib/rabbitmq"
-  command <<-EOH.gsub(/^\s+/, "")
-    service rabbitmq-server stop;
-    rm -rf mnesia/;
-    touch .reset_mnesia_database;
-    service rabbitmq-server start
-  EOH
-
-  not_if { ::File.exists? "/var/lib/rabbitmq/.reset_mnesia_database" }
-  only_if { node["openstack"]["mq"]["cluster"] }
-end
