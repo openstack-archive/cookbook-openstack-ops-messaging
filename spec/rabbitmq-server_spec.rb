@@ -36,7 +36,7 @@ describe "openstack-ops-messaging::rabbitmq-server" do
         )
       end
 
-      it "overrides cluster_disk_nodes" do
+      it "overrides and sorts cluster_disk_nodes" do
         expect(@chef_run.node['rabbitmq']['cluster_disk_nodes']).to eql(
           ["guest@host1", "guest@host2"]
         )

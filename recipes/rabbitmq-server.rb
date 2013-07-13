@@ -46,7 +46,7 @@ if node["openstack"]["mq"]["cluster"]
   qs = "roles:#{rabbit_server_role} AND chef_environment:#{node.chef_environment}"
   node.override["rabbitmq"]["cluster_disk_nodes"] = search(:node, qs).map do |n|
     "#{user}@#{n['hostname']}"
-  end
+  end.sort
 end
 
 include_recipe "rabbitmq"
