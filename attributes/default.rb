@@ -19,3 +19,4 @@
 
 default["openstack"]["mq"]["bind_interface"] = "lo"
 default["openstack"]["mq"]["cluster"] = false
+default["openstack"]["mq"]["erl_bind_networking"] = false
