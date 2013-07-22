@@ -42,7 +42,6 @@ None
 # Attributes #
 
 * `openstack["mq"]["bind_interface"]` - bind to interfaces IPv4 address
-* `openstack["mq"]["erl_bind_networking"]` - whether or not to bind rabbit and epmd to the listen address determined by `openstack["mq"]["bind_interface"]`
 * `openstack["mq"]["cluster"]` - whether or not to cluster rabbit, defaults to 'false'
 
 Testing

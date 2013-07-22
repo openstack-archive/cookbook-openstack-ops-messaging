@@ -19,8 +19,6 @@
 # limitations under the License.
 #
 
-require "resolv"
-
 class ::Chef::Recipe
   include ::Openstack
 end
@@ -41,33 +39,13 @@ node.override["rabbitmq"]["default_user"] = user
 node.override["rabbitmq"]["default_pass"] = pass
 node.override["rabbitmq"]["use_distro_version"] = true
 
-# Bind EPMD to the `listen_address`.
-# http://tickets.opscode.com/browse/COOK-3320
-if node["openstack"]["mq"]["erl_bind_networking"]
-  begin
-    fqdn = ::Resolv.getname listen_address
-    host = fqdn.split(/\./)[0]
-
-    node.override["rabbitmq"]["erl_networking_bind_address"] = listen_address
-    node.set["rabbitmq"]["nodename"] = "#{user}@#{host}"
-    node.save
-  rescue ::Resolv::ResolvError
-    log "IP '#{listen_address}' failed to resolve reverse DNS!" do
-      level :error
-    end
-  end
-else
-  node.set["rabbitmq"]["nodename"] = "#{user}@#{node["hostname"]}"
-  node.save
-end
-
 # Clustering
 if node["openstack"]["mq"]["cluster"]
   node.override["rabbitmq"]["cluster"] = node["openstack"]["mq"]["cluster"]
   node.override["rabbitmq"]["erlang_cookie"] = service_password "rabbit_cookie"
   qs = "roles:#{rabbit_server_role} AND chef_environment:#{node.chef_environment}"
   node.override["rabbitmq"]["cluster_disk_nodes"] = search(:node, qs).map do |n|
-    n["rabbitmq"]["nodename"]
+    "#{user}@#{n['hostname']}"
   end.sort
 end
 

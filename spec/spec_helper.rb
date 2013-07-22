@@ -19,8 +19,8 @@ def ops_messaging_stubs
   ::Chef::Recipe.any_instance.stub(:search).
     with(:node, "roles:os-ops-messaging AND chef_environment:_default").
     and_return [
-      { 'rabbitmq' => { 'nodename' => 'guest@host2' }},
-      { 'rabbitmq' => { 'nodename' => 'guest@host1' }}
+      { 'hostname' => 'host2' },
+      { 'hostname' => 'host1' }
     ]
   ::Chef::Recipe.any_instance.stub(:user_password).
     and_return "rabbit-pass"
