@@ -3,6 +3,7 @@
 # Recipe:: default
 #
 # Copyright 2013, AT&T Services, Inc.
+# Copyright 2013, Opscode, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,3 +20,10 @@
 
 default["openstack"]["mq"]["bind_interface"] = "lo"
 default["openstack"]["mq"]["cluster"] = false
+
+['block-storage', 'compute', 'image', 'metering', 'network'].each do |service|
+  default['openstack'][service]['rabbit']['host'] = node['openstack']['mq']['listen']
+  default['openstack'][service]['rabbit']['port'] = node['openstack']['mq']['port']
+  default['openstack'][service]['rabbit']['username'] = node['openstack']['mq']['user']
+  default['openstack'][service]['rabbit']['vhost'] = node['openstack']['mq']['vhost']
+end

@@ -16,6 +16,25 @@ describe "openstack-ops-messaging::rabbitmq-server" do
       expect(@chef_run.node['rabbitmq']['default_pass']).to eql "rabbit-pass"
     end
 
+    it "overrides rabbit and openstack image attributes" do
+      chef_run = ::ChefSpec::ChefRunner.new ::UBUNTU_OPTS do |n|
+        n.set['openstack']['mq']['bind_interface'] = 'eth0'
+        n.set['openstack']['mq']['port'] = '4242'
+        n.set['openstack']['mq']['user'] = 'foo'
+        n.set['openstack']['mq']['vhost'] = '/bar'
+      end
+
+      chef_run.converge "openstack-ops-messaging::rabbitmq-server"
+
+      expect(chef_run.node['openstack']['mq']['listen']).to eql '33.44.55.66'
+      expect(chef_run.node['openstack']['mq']['port']).to eql '4242'
+      expect(chef_run.node['openstack']['mq']['user']).to eql 'foo'
+      expect(chef_run.node['openstack']['mq']['vhost']).to eql '/bar'
+      expect(chef_run.node['openstack']['image']['rabbit']['port']).to eql '4242'
+      expect(chef_run.node['openstack']['image']['rabbit']['username']).to eql 'foo'
+      expect(chef_run.node['openstack']['image']['rabbit']['vhost']).to eql '/bar'
+    end
+
     describe "cluster" do
       before do
         @chef_run = ::ChefSpec::ChefRunner.new(::UBUNTU_OPTS) do |n|

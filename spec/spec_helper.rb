@@ -16,12 +16,15 @@ def ops_messaging_stubs
   ::Chef::Recipe.any_instance.stub(:address_for).
     with("lo").
     and_return "127.0.0.1"
+  ::Chef::Recipe.any_instance.stub(:address_for).
+    with("eth0").
+    and_return "33.44.55.66"
   ::Chef::Recipe.any_instance.stub(:search).
     with(:node, "roles:os-ops-messaging AND chef_environment:_default").
     and_return [
-      { 'hostname' => 'host2' },
-      { 'hostname' => 'host1' }
-    ]
+    { 'hostname' => 'host2' },
+    { 'hostname' => 'host1' }
+  ]
   ::Chef::Recipe.any_instance.stub(:user_password).
     and_return "rabbit-pass"
   ::Chef::Recipe.any_instance.stub(:service_password).
