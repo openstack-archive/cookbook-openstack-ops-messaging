@@ -2,6 +2,9 @@
 
 This file is used to list changes made in each version of cookbook-openstack-ops-messaging.
 
+## 8.0.0
+* upgrade to Havana
+
 ## 7.0.1:
 
 * default the node['openstack'][*]['rabbit'] attributes for all the services

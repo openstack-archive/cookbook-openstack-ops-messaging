@@ -1,37 +1,30 @@
 {
-  "sha": "45e1bf81e0dd550088ee5794e167786e616570ea",
   "sources": {
     "openstack-ops-messaging": {
       "path": "."
     },
     "openstack-common": {
-      "locked_version": "0.3.0",
+      "locked_version": "8.0.0",
       "git": "git://github.com/stackforge/cookbook-openstack-common.git",
-      "ref": "25b183f2362fa501cfee4db331491b3d984a5c05"
+      "ref": "2201bd113ffe1742c19811aa4df59a5790af71e3"
     },
     "rabbitmq": {
       "locked_version": "2.1.2"
     },
-    "erlang": {
-      "locked_version": "1.3.0"
-    },
     "apt": {
       "locked_version": "2.0.0"
-    },
-    "yum": {
-      "locked_version": "2.3.0"
-    },
-    "build-essential": {
-      "locked_version": "1.4.0"
     },
     "database": {
       "locked_version": "1.4.0"
     },
     "mysql": {
-      "locked_version": "3.0.2"
+      "locked_version": "3.0.0"
     },
     "openssl": {
       "locked_version": "1.0.2"
+    },
+    "build-essential": {
+      "locked_version": "1.4.0"
     },
     "postgresql": {
       "locked_version": "3.0.2"
@@ -41,6 +34,12 @@
     },
     "xfs": {
       "locked_version": "1.1.0"
+    },
+    "erlang": {
+      "locked_version": "1.3.0"
+    },
+    "yum": {
+      "locked_version": "2.3.0"
     }
   }
 }

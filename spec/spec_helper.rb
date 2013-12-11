@@ -1,4 +1,5 @@
 require "chefspec"
+require_relative "support/matcher"
 
 ::LOG_LEVEL = :fatal
 ::REDHAT_OPTS = {

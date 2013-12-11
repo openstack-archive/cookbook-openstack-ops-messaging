@@ -1,6 +1,6 @@
 # Description #
 
-This cookbook provides shared message queue configuration for the OpenStack **Grizzly** reference deployment provided by Chef for OpenStack. The http://github.com/mattray/chef-openstack-repo contains documentation for using this cookbook in the context of a full OpenStack deployment. It currently supports RabbitMQ and will soon other queues.
+This cookbook provides shared message queue configuration for the OpenStack **Havana** reference deployment provided by Chef for OpenStack. The http://github.com/mattray/chef-openstack-repo contains documentation for using this cookbook in the context of a full OpenStack deployment. It currently supports RabbitMQ and will soon other queues.
 
 # Requirements #
 
@@ -65,10 +65,12 @@ License and Author
 | **Author**           |  John Dewey (<john@dewey.ws>)                      |
 | **Author**           |  Matt Ray (<matt@opscode.com>)                     |
 | **Author**           |  Craig Tracey (<craigtracey@gmail.com>)            |
+| **Author**           |  Ionut Artarisi (<iartarisi@suse.cz>)              |
 |                      |                                                    |
 | **Copyright**        |  Copyright (c) 2013, Opscode, Inc.                 |
 | **Copyright**        |  Copyright (c) 2013, Craig Tracey                  |
 | **Copyright**        |  Copyright (c) 2013, AT&T Services, Inc.           |
+| **Copyright**        |  Copyright (c) 2013, SUSE Linux  GmbH.             |
 
 
 Licensed under the Apache License, Version 2.0 (the "License");

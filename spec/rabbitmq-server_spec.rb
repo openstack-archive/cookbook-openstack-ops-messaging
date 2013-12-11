@@ -4,7 +4,7 @@ describe "openstack-ops-messaging::rabbitmq-server" do
   before { ops_messaging_stubs }
   describe "ubuntu" do
     before do
-      @chef_run = ::ChefSpec::ChefRunner.new ::UBUNTU_OPTS
+      @chef_run = ::ChefSpec::Runner.new ::UBUNTU_OPTS
       @chef_run.converge "openstack-ops-messaging::rabbitmq-server"
     end
 
@@ -17,7 +17,7 @@ describe "openstack-ops-messaging::rabbitmq-server" do
     end
 
     it "overrides rabbit and openstack image attributes" do
-      chef_run = ::ChefSpec::ChefRunner.new ::UBUNTU_OPTS do |n|
+      chef_run = ::ChefSpec::Runner.new ::UBUNTU_OPTS do |n|
         n.set['openstack']['mq']['bind_interface'] = 'eth0'
         n.set['openstack']['mq']['port'] = '4242'
         n.set['openstack']['mq']['user'] = 'foo'
@@ -37,7 +37,7 @@ describe "openstack-ops-messaging::rabbitmq-server" do
 
     describe "cluster" do
       before do
-        @chef_run = ::ChefSpec::ChefRunner.new(::UBUNTU_OPTS) do |n|
+        @chef_run = ::ChefSpec::Runner.new(::UBUNTU_OPTS) do |n|
           n.set["openstack"]["mq"] = {
             "cluster" => true
           }
@@ -68,29 +68,16 @@ describe "openstack-ops-messaging::rabbitmq-server" do
     end
 
     describe "lwrps" do
-      it "deletes guest user" do
-        resource = @chef_run.find_resource(
-          "rabbitmq_user",
-          "remove rabbit guest user"
-        ).to_hash
-
-        expect(resource).to include(
-          :user => "guest",
-          :action => [:delete]
-        )
+      it "does not delete the guest user" do
+        expect(@chef_run).not_to delete_rabbitmq_user("remove rabbit guest user")
       end
 
-      it "doesn't delete guest user" do
-        opts = ::UBUNTU_OPTS.merge(:evaluate_guards => true)
-        chef_run = ::ChefSpec::ChefRunner.new opts
-        chef_run.converge "openstack-ops-messaging::rabbitmq-server"
+      it "deletes a user not called 'guest'" do
+        chef_run = ChefSpec::Runner.new(::UBUNTU_OPTS) do |node|
+          node.node.set["openstack"]["mq"]["user"] = "not-a-guest"
+        end.converge("openstack-ops-messaging::rabbitmq-server")
 
-        resource = chef_run.find_resource(
-          "rabbitmq_user",
-          "remove rabbit guest user"
-        )
-
-        expect(resource).to be_nil
+        expect(chef_run).to delete_rabbitmq_user("remove rabbit guest user")
       end
 
       it "adds user" do
