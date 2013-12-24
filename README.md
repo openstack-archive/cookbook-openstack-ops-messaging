@@ -66,11 +66,14 @@ License and Author
 | **Author**           |  Matt Ray (<matt@opscode.com>)                     |
 | **Author**           |  Craig Tracey (<craigtracey@gmail.com>)            |
 | **Author**           |  Ionut Artarisi (<iartarisi@suse.cz>)              |
+| **Author**           |  JieHua Jin (<jinjhua@cn.ibm.com>)                 |
 |                      |                                                    |
 | **Copyright**        |  Copyright (c) 2013, Opscode, Inc.                 |
 | **Copyright**        |  Copyright (c) 2013, Craig Tracey                  |
 | **Copyright**        |  Copyright (c) 2013, AT&T Services, Inc.           |
 | **Copyright**        |  Copyright (c) 2013, SUSE Linux  GmbH.             |
+| **Copyright**        |  Copyright (c) 2013, IBM Corp.                     |
+
 
 
 Licensed under the Apache License, Version 2.0 (the "License");

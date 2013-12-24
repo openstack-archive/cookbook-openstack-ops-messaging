@@ -93,6 +93,19 @@ describe "openstack-ops-messaging::rabbitmq-server" do
         )
       end
 
+      it "changes password" do
+        resource = @chef_run.find_resource(
+          "rabbitmq_user",
+          "change openstack rabbit user password"
+        ).to_hash
+
+        expect(resource).to include(
+          :user => "guest",
+          :password => "rabbit-pass",
+          :action => [:change_password]
+        )
+      end
+
       it "adds vhost" do
         resource = @chef_run.find_resource(
           "rabbitmq_vhost",

@@ -2,6 +2,9 @@
 
 This file is used to list changes made in each version of cookbook-openstack-ops-messaging.
 
+## 8.0.1:
+* Add change_password to make rabbitmq work when develop_mode=false
+
 ## 8.0.0
 * upgrade to Havana
 
