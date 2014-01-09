@@ -1,4 +1,5 @@
 require "chefspec"
+require "chefspec/berkshelf"
 require_relative "support/matcher"
 
 ::LOG_LEVEL = :fatal
