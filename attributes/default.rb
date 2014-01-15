@@ -1,3 +1,4 @@
+# encoding: UTF-8
 #
 # Cookbook Name:: openstack-ops-messaging
 # Recipe:: default
@@ -18,10 +19,10 @@
 # limitations under the License.
 #
 
-default["openstack"]["mq"]["bind_interface"] = "lo"
-default["openstack"]["mq"]["cluster"] = false
+default['openstack']['mq']['bind_interface'] = 'lo'
+default['openstack']['mq']['cluster'] = false
 
-['block-storage', 'compute', 'image', 'metering', 'network'].each do |service|
+%w[block-storage compute image metering network].each do |service|
   default['openstack'][service]['rabbit']['host'] = node['openstack']['mq']['listen']
   default['openstack'][service]['rabbit']['port'] = node['openstack']['mq']['port']
   default['openstack'][service]['rabbit']['username'] = node['openstack']['mq']['user']

@@ -1,6 +1,7 @@
+# encoding: UTF-8
 name              'openstack-ops-messaging'
-maintainer        'Opscode, Inc.'
-maintainer_email  'matt@opscode.com'
+maintainer        'Chef Software, Inc.'
+maintainer_email  'matt@getchef.com'
 license           'Apache 2.0'
 description       'Provides the shared messaging configuration for Chef for OpenStack.'
 version           '8.0.1'
