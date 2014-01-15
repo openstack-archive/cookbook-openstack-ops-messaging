@@ -25,7 +25,7 @@ end
 
 rabbit_server_role = node["openstack"]["mq"]["server_role"]
 user = node["openstack"]["mq"]["user"]
-pass = user_password user
+pass = get_password "user", user
 vhost = node["openstack"]["mq"]["vhost"]
 bind_interface = node["openstack"]["mq"]["bind_interface"]
 listen_address = address_for node["openstack"]["mq"]["bind_interface"]
@@ -42,7 +42,7 @@ node.override["rabbitmq"]["use_distro_version"] = true
 # Clustering
 if node["openstack"]["mq"]["cluster"]
   node.override["rabbitmq"]["cluster"] = node["openstack"]["mq"]["cluster"]
-  node.override["rabbitmq"]["erlang_cookie"] = service_password "rabbit_cookie"
+  node.override["rabbitmq"]["erlang_cookie"] = get_password "service", "rabbit_cookie"
   qs = "roles:#{rabbit_server_role} AND chef_environment:#{node.chef_environment}"
   node.override["rabbitmq"]["cluster_disk_nodes"] = search(:node, qs).map do |n|
     "#{user}@#{n['hostname']}"

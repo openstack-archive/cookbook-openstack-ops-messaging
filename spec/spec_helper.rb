@@ -27,9 +27,10 @@ def ops_messaging_stubs
     { 'hostname' => 'host2' },
     { 'hostname' => 'host1' }
   ]
-  ::Chef::Recipe.any_instance.stub(:user_password).
+  ::Chef::Recipe.any_instance.stub(:get_password).
+    with("user", anything()).
     and_return "rabbit-pass"
-  ::Chef::Recipe.any_instance.stub(:service_password).
-    with("rabbit_cookie").
+  ::Chef::Recipe.any_instance.stub(:get_password).
+    with("service", "rabbit_cookie").
     and_return "erlang-cookie"
 end
