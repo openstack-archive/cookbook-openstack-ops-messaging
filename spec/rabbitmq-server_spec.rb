@@ -31,9 +31,9 @@ describe 'openstack-ops-messaging::rabbitmq-server' do
       expect(chef_run.node['openstack']['mq']['port']).to eql '4242'
       expect(chef_run.node['openstack']['mq']['user']).to eql 'foo'
       expect(chef_run.node['openstack']['mq']['vhost']).to eql '/bar'
-      expect(chef_run.node['openstack']['image']['rabbit']['port']).to eql '4242'
-      expect(chef_run.node['openstack']['image']['rabbit']['username']).to eql 'foo'
-      expect(chef_run.node['openstack']['image']['rabbit']['vhost']).to eql '/bar'
+      expect(chef_run.node['openstack']['mq']['image']['rabbit']['port']).to eql '4242'
+      expect(chef_run.node['openstack']['mq']['image']['rabbit']['userid']).to eql 'foo'
+      expect(chef_run.node['openstack']['mq']['image']['rabbit']['vhost']).to eql '/bar'
     end
 
     describe 'cluster' do
