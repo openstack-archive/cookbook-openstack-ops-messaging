@@ -27,12 +27,13 @@ end
 user = node['openstack']['mq']['user']
 pass = get_password 'user', user
 vhost = node['openstack']['mq']['vhost']
-listen_address = address_for node['openstack']['mq']['bind_interface']
+rabbit_endpoint = endpoint 'mq'
+listen_address = rabbit_endpoint.host
 
 # Used by OpenStack#rabbit_servers/#rabbit_server
 node.set['openstack']['mq']['listen'] = listen_address
 
-node.override['rabbitmq']['port'] = node['openstack']['mq']['port']
+node.override['rabbitmq']['port'] = rabbit_endpoint.port
 node.override['rabbitmq']['address'] = listen_address
 node.override['rabbitmq']['default_user'] = user
 node.override['rabbitmq']['default_pass'] = pass

@@ -41,8 +41,17 @@ None
 
 # Attributes #
 
-* `openstack["mq"]["bind_interface"]` - bind to interfaces IPv4 address
 * `openstack["mq"]["cluster"]` - whether or not to cluster rabbit, defaults to 'false'
+
+The following attributes are defined in attributes/messaging.rb of the common cookbook, but are documented here due to their relevance:
+
+* `openstack["endpoints"]["mq"]["host"]` - The IP address to bind the rabbit service to
+* `openstack["endpoints"]["mq"]["scheme"]` - Unused at this time
+* `openstack["endpoints"]["mq"]["port"]` - The port to bind the rabbit service to
+* `openstack["endpoints"]["mq"]["path"]` - Unused at this time
+* `openstack["endpoints"]["mq"]["bind_interface"]` - The interface name to bind the rabbit service to
+
+If the value of the "bind_interface" attribute is non-nil, then the rabbit service will be bound to the first IP address on that interface.  If the value of the "bind_interface" attribute is nil, then the rabbit service will be bound to the IP address specified in the host attribute.
 
 Testing
 =====

@@ -10,7 +10,7 @@ describe 'openstack-ops-messaging::rabbitmq-server' do
     include_context 'ops_messaging_stubs'
 
     it 'overrides default rabbit attributes' do
-      expect(chef_run.node['openstack']['mq']['port']).to eq('5672')
+      expect(chef_run.node['openstack']['endpoints']['mq']['port']).to eq('5672')
       expect(chef_run.node['openstack']['mq']['listen']).to eq('127.0.0.1')
       expect(chef_run.node['rabbitmq']['address']).to eq('127.0.0.1')
       expect(chef_run.node['rabbitmq']['default_user']).to eq('guest')
@@ -19,13 +19,13 @@ describe 'openstack-ops-messaging::rabbitmq-server' do
     end
 
     it 'overrides rabbit and openstack image attributes' do
-      node.set['openstack']['mq']['bind_interface'] = 'eth0'
-      node.set['openstack']['mq']['port'] = '4242'
+      node.set['openstack']['endpoints']['mq']['bind_interface'] = 'eth0'
+      node.set['openstack']['endpoints']['mq']['port'] = '4242'
       node.set['openstack']['mq']['user'] = 'foo'
       node.set['openstack']['mq']['vhost'] = '/bar'
 
       expect(chef_run.node['openstack']['mq']['listen']).to eq('33.44.55.66')
-      expect(chef_run.node['openstack']['mq']['port']).to eq('4242')
+      expect(chef_run.node['openstack']['endpoints']['mq']['port']).to eq('4242')
       expect(chef_run.node['openstack']['mq']['user']).to eq('foo')
       expect(chef_run.node['openstack']['mq']['vhost']).to eq('/bar')
       expect(chef_run.node['openstack']['mq']['image']['rabbit']['port']).to eq('4242')
