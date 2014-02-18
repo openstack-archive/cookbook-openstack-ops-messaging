@@ -35,3 +35,9 @@ def ops_messaging_stubs # rubocop:disable MethodLength
     .with('service', 'rabbit_cookie')
     .and_return 'erlang-cookie'
 end
+
+# README(galstrom21): This will remove any coverage warnings from
+#   dependent cookbooks
+ChefSpec::Coverage.filters << '*/openstack-ops-messaging'
+
+at_exit { ChefSpec::Coverage.report! }
