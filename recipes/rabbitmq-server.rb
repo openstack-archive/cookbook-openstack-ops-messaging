@@ -36,7 +36,6 @@ node.override['rabbitmq']['port'] = node['openstack']['mq']['port']
 node.override['rabbitmq']['address'] = listen_address
 node.override['rabbitmq']['default_user'] = user
 node.override['rabbitmq']['default_pass'] = pass
-node.override['rabbitmq']['use_distro_version'] = true
 
 # Clustering
 if node['openstack']['mq']['cluster']

@@ -6,7 +6,7 @@ require_relative 'support/matcher'
 ::LOG_LEVEL = :fatal
 ::REDHAT_OPTS = {
   platform: 'redhat',
-  version: '6.3',
+  version: '6.5',
   log_level: ::LOG_LEVEL
 }
 ::UBUNTU_OPTS = {

@@ -15,6 +15,7 @@ describe 'openstack-ops-messaging::rabbitmq-server' do
       expect(@chef_run.node['rabbitmq']['address']).to eql '127.0.0.1'
       expect(@chef_run.node['rabbitmq']['default_user']).to eql 'guest'
       expect(@chef_run.node['rabbitmq']['default_pass']).to eql 'rabbit-pass'
+      expect(@chef_run.node['rabbitmq']['use_distro_version']).to eql true
     end
 
     it 'overrides rabbit and openstack image attributes' do
