@@ -63,78 +63,53 @@ describe 'openstack-ops-messaging::rabbitmq-server' do
     end
 
     describe 'lwrps' do
-      it 'does not delete the guest user' do
-        expect(chef_run).not_to delete_rabbitmq_user('remove rabbit guest user')
+      context 'default mq attributes' do
+        it 'does not delete the guest user' do
+          expect(chef_run).not_to delete_rabbitmq_user('remove rabbit guest user')
+        end
       end
 
-      it "deletes a user not called 'guest'" do
-        node.node.set['openstack']['mq']['user'] = 'not-a-guest'
-        expect(chef_run).to delete_rabbitmq_user('remove rabbit guest user')
-      end
+      context 'custom mq attributes' do
+        before do
+          node.set['openstack']['mq']['user'] = 'not-a-guest'
+          node.set['openstack']['mq']['vhost'] = '/foo'
+        end
 
-      it 'adds user' do
-        resource = chef_run.find_resource(
-          'rabbitmq_user',
-          'add openstack rabbit user'
-        ).to_hash
+        it 'deletes the guest user' do
+          expect(chef_run).to delete_rabbitmq_user(
+            'remove rabbit guest user'
+          ).with(user: 'guest')
+        end
 
-        expect(resource).to include(
-          user: 'guest',
-          password: 'rabbit-pass',
-          action: [:add]
-        )
-      end
+        it 'adds openstack rabbit user' do
+          expect(chef_run).to add_rabbitmq_user(
+            'add openstack rabbit user'
+          ).with(user: 'not-a-guest', password: 'rabbit-pass')
+        end
 
-      it 'changes password' do
-        resource = chef_run.find_resource(
-          'rabbitmq_user',
-          'change openstack rabbit user password'
-        ).to_hash
+        it 'changes openstack rabbit user password' do
+          expect(chef_run).to rabbitmq_user_change_password(
+            'change openstack rabbit user password'
+          ).with(user: 'not-a-guest', password: 'rabbit-pass')
+        end
 
-        expect(resource).to include(
-          user: 'guest',
-          password: 'rabbit-pass',
-          action: [:change_password]
-        )
-      end
+        it 'adds openstack rabbit vhost' do
+          expect(chef_run).to add_rabbitmq_vhost(
+            'add openstack rabbit vhost'
+          ).with(vhost: '/foo')
+        end
 
-      it 'adds vhost' do
-        resource = chef_run.find_resource(
-          'rabbitmq_vhost',
-          'add openstack rabbit vhost'
-        ).to_hash
+        it 'sets openstack user permissions' do
+          expect(chef_run).to rabbitmq_user_set_permissions(
+            'set openstack user permissions'
+          ).with(user: 'not-a-guest', vhost: '/foo', permissions: '.* .* .*')
+        end
 
-        expect(resource).to include(
-          vhost: '/',
-          action: [:add]
-        )
-      end
-
-      it 'sets user permissions' do
-        resource = chef_run.find_resource(
-          'rabbitmq_user',
-          'set openstack user permissions'
-        ).to_hash
-
-        expect(resource).to include(
-          user: 'guest',
-          vhost: '/',
-          permissions: '.* .* .*',
-          action: [:set_permissions]
-        )
-      end
-
-      it 'sets administrator tag' do
-        resource = chef_run.find_resource(
-          'rabbitmq_user',
-          'set rabbit administrator tag'
-        ).to_hash
-
-        expect(resource).to include(
-          user: 'guest',
-          tag: 'administrator',
-          action: [:set_tags]
-        )
+        it 'sets administrator tag' do
+          expect(chef_run).to rabbitmq_user_set_tags(
+            'set rabbit administrator tag'
+          ).with(user: 'not-a-guest', tag: 'administrator')
+        end
       end
     end
   end
