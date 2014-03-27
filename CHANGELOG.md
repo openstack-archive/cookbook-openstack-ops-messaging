@@ -1,6 +1,8 @@
 # CHANGELOG for cookbook-openstack-ops-messaging
 
 This file is used to list changes made in each version of cookbook-openstack-ops-messaging.
+## 9.0.0
+* Upgrade to Icehouse
 
 ## 8.0.1:
 * Add change_password to make rabbitmq work when develop_mode=false
