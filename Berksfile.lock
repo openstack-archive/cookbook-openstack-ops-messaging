@@ -1,0 +1,60 @@
+{
+  "sources": {
+    "openstack-ops-messaging": {
+      "path": "."
+    },
+    "openstack-common": {
+      "locked_version": "8.5.0",
+      "git": "git://github.com/stackforge/cookbook-openstack-common.git",
+      "ref": "3e68d2e9bace0adfcc4a4907611c8c3ee573a7ce"
+    },
+    "rabbitmq": {
+      "locked_version": "3.0.4"
+    },
+    "erlang": {
+      "locked_version": "1.5.2"
+    },
+    "apt": {
+      "locked_version": "2.3.8"
+    },
+    "yum": {
+      "locked_version": "3.1.4"
+    },
+    "yum-epel": {
+      "locked_version": "0.3.4"
+    },
+    "yum-erlang_solutions": {
+      "locked_version": "0.2.0"
+    },
+    "build-essential": {
+      "locked_version": "1.4.4"
+    },
+    "database": {
+      "locked_version": "2.0.0"
+    },
+    "mysql": {
+      "locked_version": "4.1.2"
+    },
+    "openssl": {
+      "locked_version": "1.1.0"
+    },
+    "homebrew": {
+      "locked_version": "1.5.4"
+    },
+    "windows": {
+      "locked_version": "1.30.0"
+    },
+    "chef_handler": {
+      "locked_version": "1.1.5"
+    },
+    "postgresql": {
+      "locked_version": "3.3.4"
+    },
+    "aws": {
+      "locked_version": "2.1.1"
+    },
+    "xfs": {
+      "locked_version": "1.1.0"
+    }
+  }
+}
