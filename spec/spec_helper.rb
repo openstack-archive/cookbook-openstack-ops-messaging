@@ -1,6 +1,9 @@
 # encoding: UTF-8
 require 'chefspec'
 require 'chefspec/berkshelf'
+
+ChefSpec::Coverage.start! { add_filter 'openstack-ops-messaging' }
+
 require_relative 'support/matcher'
 
 LOG_LEVEL = :fatal
@@ -37,9 +40,3 @@ shared_context 'ops_messaging_stubs' do
       .and_return 'erlang-cookie'
   end
 end
-
-# README(galstrom21): This will remove any coverage warnings from
-#   dependent cookbooks
-ChefSpec::Coverage.filters << '*/openstack-ops-messaging'
-
-at_exit { ChefSpec::Coverage.report! }
