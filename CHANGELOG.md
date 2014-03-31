@@ -1,6 +1,11 @@
 # CHANGELOG for cookbook-openstack-ops-messaging
 
 This file is used to list changes made in each version of cookbook-openstack-ops-messaging.
+
+## 9.0.1
+### Bug
+* Fix the depends cookbook version issue in metadata.rb
+
 ## 9.0.0
 * Upgrade to Icehouse
 
