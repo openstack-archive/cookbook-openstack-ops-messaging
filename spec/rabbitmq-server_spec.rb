@@ -88,7 +88,7 @@ describe 'openstack-ops-messaging::rabbitmq-server' do
         end
 
         it 'changes openstack rabbit user password' do
-          expect(chef_run).to rabbitmq_user_change_password(
+          expect(chef_run).to change_password_rabbitmq_user(
             'change openstack rabbit user password'
           ).with(user: 'not-a-guest', password: 'rabbit-pass')
         end
@@ -100,13 +100,13 @@ describe 'openstack-ops-messaging::rabbitmq-server' do
         end
 
         it 'sets openstack user permissions' do
-          expect(chef_run).to rabbitmq_user_set_permissions(
+          expect(chef_run).to set_permissions_rabbitmq_user(
             'set openstack user permissions'
           ).with(user: 'not-a-guest', vhost: '/foo', permissions: '.* .* .*')
         end
 
         it 'sets administrator tag' do
-          expect(chef_run).to rabbitmq_user_set_tags(
+          expect(chef_run).to set_tags_rabbitmq_user(
             'set rabbit administrator tag'
           ).with(user: 'not-a-guest', tag: 'administrator')
         end
