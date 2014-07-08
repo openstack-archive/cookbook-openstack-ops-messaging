@@ -5,6 +5,7 @@ This file is used to list changes made in each version of cookbook-openstack-ops
 ## 9.0.1
 ### Bug
 * Fix the depends cookbook version issue in metadata.rb
+* bump berkshelf to 2.0.18 to allow Supermarket support
 
 ## 9.0.0
 * Upgrade to Icehouse
