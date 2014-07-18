@@ -15,6 +15,11 @@ UBUNTU_OPTS = {
   version: '12.04',
   log_level: LOG_LEVEL
 }
+SUSE_OPTS = {
+  platform: 'suse',
+  version: '11.3',
+  log_level: ::LOG_LEVEL
+}
 
 shared_context 'ops_messaging_stubs' do
   before do
