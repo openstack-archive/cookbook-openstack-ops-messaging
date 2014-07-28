@@ -10,8 +10,7 @@ describe 'openstack-ops-messaging::rabbitmq-server' do
     include_context 'ops_messaging_stubs'
 
     it 'does not set use_distro_version to true' do
-      expect(chef_run.node['rabbitmq']['use_distro_version']).to be_false
+      expect(chef_run.node['rabbitmq']['use_distro_version']).to_not be_truthy
     end
-
   end
 end

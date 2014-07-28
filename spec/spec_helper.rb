@@ -23,22 +23,22 @@ SUSE_OPTS = {
 
 shared_context 'ops_messaging_stubs' do
   before do
-    Chef::Recipe.any_instance.stub(:address_for)
+    allow_any_instance_of(Chef::Recipe).to receive(:address_for)
       .with('lo')
       .and_return '127.0.0.1'
-    Chef::Recipe.any_instance.stub(:address_for)
+    allow_any_instance_of(Chef::Recipe).to receive(:address_for)
       .with('eth0')
       .and_return '33.44.55.66'
-    Chef::Recipe.any_instance.stub(:search)
+    allow_any_instance_of(Chef::Recipe).to receive(:search)
       .with(:node, 'roles:os-ops-messaging AND chef_environment:_default')
       .and_return [
       { 'hostname' => 'host2' },
       { 'hostname' => 'host1' }
     ]
-    Chef::Recipe.any_instance.stub(:get_password)
+    allow_any_instance_of(Chef::Recipe).to receive(:get_password)
       .with('user', anything)
       .and_return 'rabbit-pass'
-    Chef::Recipe.any_instance.stub(:get_password)
+    allow_any_instance_of(Chef::Recipe).to receive(:get_password)
       .with('service', 'rabbit_cookie')
       .and_return 'erlang-cookie'
   end
