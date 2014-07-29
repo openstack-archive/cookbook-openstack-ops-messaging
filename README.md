@@ -1,6 +1,6 @@
 # Description #
 
-This cookbook provides shared message queue configuration for the OpenStack **Icehouse** reference deployment provided by Chef for OpenStack. The http://github.com/mattray/chef-openstack-repo contains documentation for using this cookbook in the context of a full OpenStack deployment. It currently supports RabbitMQ and will soon other queues.
+This cookbook provides shared message queue configuration for the OpenStack deployment provided by Chef for OpenStack. The http://github.com/mattray/chef-openstack-repo contains documentation for using this cookbook in the context of a full OpenStack deployment. It currently supports RabbitMQ and will soon other queues.
 
 # Requirements #
 

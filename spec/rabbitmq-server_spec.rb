@@ -15,7 +15,7 @@ describe 'openstack-ops-messaging::rabbitmq-server' do
       expect(chef_run.node['rabbitmq']['address']).to eq('127.0.0.1')
       expect(chef_run.node['rabbitmq']['default_user']).to eq('guest')
       expect(chef_run.node['rabbitmq']['default_pass']).to eq('rabbit-pass')
-      expect(chef_run.node['rabbitmq']['use_distro_version']).to be_true
+      expect(chef_run.node['rabbitmq']['use_distro_version']).to be_truthy
     end
 
     it 'overrides rabbit and openstack image attributes' do
@@ -41,7 +41,7 @@ describe 'openstack-ops-messaging::rabbitmq-server' do
       end
 
       it 'overrides cluster' do
-        expect(chef_run.node['rabbitmq']['cluster']).to be_true
+        expect(chef_run.node['rabbitmq']['cluster']).to be_truthy
       end
 
       it 'overrides erlang_cookie' do

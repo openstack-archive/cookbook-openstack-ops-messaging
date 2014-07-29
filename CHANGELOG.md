@@ -2,6 +2,9 @@
 
 This file is used to list changes made in each version of cookbook-openstack-ops-messaging.
 
+## 10.0.0
+* Upgrading to Juno
+
 ## 9.0.1
 ### Bug
 * Fix the depends cookbook version issue in metadata.rb
