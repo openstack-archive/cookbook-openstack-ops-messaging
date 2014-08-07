@@ -2,6 +2,9 @@
 
 This file is used to list changes made in each version of cookbook-openstack-ops-messaging.
 
+## 10.0.1
+* Configure rabbitmq port for both ssl and non-ssl cases
+
 ## 10.0.0
 * Upgrading to Juno
 * Upgrading berkshelf from 2.0.18 to 3.1.5

@@ -33,7 +33,15 @@ listen_address = rabbit_endpoint.host
 # Used by OpenStack#rabbit_servers/#rabbit_server
 node.set['openstack']['mq']['listen'] = listen_address
 
-node.override['rabbitmq']['port'] = rabbit_endpoint.port
+if node['openstack']['mq']['rabbitmq']['use_ssl']
+  if node['rabbitmq']['ssl_port'] != rabbit_endpoint.port
+    node.override['rabbitmq']['port'] = rabbit_endpoint.port
+  else
+    Chef::Log.error 'Unable to listen on the port #{rabbit_endpoint.port} for RabbitMQ TCP, which is listened on by SSL!'
+  end
+else
+  node.override['rabbitmq']['port'] = rabbit_endpoint.port
+end
 node.override['rabbitmq']['address'] = listen_address
 node.override['rabbitmq']['default_user'] = user
 node.override['rabbitmq']['default_pass'] = pass

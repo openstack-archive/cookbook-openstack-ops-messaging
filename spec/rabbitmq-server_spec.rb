@@ -12,6 +12,8 @@ describe 'openstack-ops-messaging::rabbitmq-server' do
     it 'overrides default rabbit attributes' do
       expect(chef_run.node['openstack']['endpoints']['mq']['port']).to eq('5672')
       expect(chef_run.node['openstack']['mq']['listen']).to eq('127.0.0.1')
+      expect(chef_run.node['openstack']['mq']['rabbitmq']['use_ssl']).to be_falsey
+      expect(chef_run.node['rabbitmq']['port']).to eq(5672)
       expect(chef_run.node['rabbitmq']['address']).to eq('127.0.0.1')
       expect(chef_run.node['rabbitmq']['default_user']).to eq('guest')
       expect(chef_run.node['rabbitmq']['default_pass']).to eq('rabbit-pass')
@@ -31,6 +33,20 @@ describe 'openstack-ops-messaging::rabbitmq-server' do
       expect(chef_run.node['openstack']['mq']['image']['rabbit']['port']).to eq('4242')
       expect(chef_run.node['openstack']['mq']['image']['rabbit']['userid']).to eq('foo')
       expect(chef_run.node['openstack']['mq']['image']['rabbit']['vhost']).to eq('/bar')
+    end
+
+    describe 'rabbit ssl' do
+      before do
+        node.set['openstack']['mq']['rabbitmq']['use_ssl'] = true
+      end
+
+      it 'overrides rabbit ssl attributes' do
+        node.set['openstack']['endpoints']['mq']['port'] = '5671'
+
+        expect(chef_run.node['openstack']['mq']['rabbitmq']['use_ssl']).to be_truthy
+        expect(chef_run.node['rabbitmq']['ssl_port']).to eq(5671)
+        expect(chef_run.node['rabbitmq']['port']).to be_nil
+      end
     end
 
     describe 'cluster' do
