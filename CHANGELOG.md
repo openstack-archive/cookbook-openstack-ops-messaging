@@ -4,6 +4,7 @@ This file is used to list changes made in each version of cookbook-openstack-ops
 
 ## 10.0.1
 * Configure rabbitmq port for both ssl and non-ssl cases
+* Fix metadata version constraint for common
 
 ## 10.0.0
 * Upgrading to Juno
