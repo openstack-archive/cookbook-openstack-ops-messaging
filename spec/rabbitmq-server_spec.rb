@@ -124,6 +124,14 @@ describe 'openstack-ops-messaging::rabbitmq-server' do
             'set rabbit administrator tag'
           ).with(user: 'not-a-guest', tag: 'administrator')
         end
+
+        describe 'notifies immediately' do
+          let(:template) { chef_run.template('/etc/rabbitmq/rabbitmq.config') }
+
+          it 'sends the specific notification to the service immediately' do
+            expect(template).to notify('service[rabbitmq-server]').to(:restart).immediately
+          end
+        end
       end
     end
   end

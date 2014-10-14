@@ -7,6 +7,8 @@ This file is used to list changes made in each version of cookbook-openstack-ops
 * Fix metadata version constraint for common
 * Bump Chef gem to 11.16
 * No need to push our rabbit user/password to rabbit cookbook
+* Add a temp workaround for an issue #153 in rabbit cookbook to notify
+  rabbitmq-server to restart immediately.
 
 ## 10.0.0
 * Upgrading to Juno

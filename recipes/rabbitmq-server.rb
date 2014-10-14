@@ -100,3 +100,9 @@ rabbitmq_user 'set rabbit administrator tag' do
 
   action :set_tags
 end
+
+# TODO(wenchma) This could be removed once the issue is fixed in rabbitmq cookbook.
+# Issue: https://github.com/kennonkwok/rabbitmq/issues/153
+# Notifies rabbitmq-server service restart.
+r = resources(template: "#{node['rabbitmq']['config_root']}/rabbitmq.config")
+r.notifies(:restart, "service[#{node['rabbitmq']['service_name']}]", :immediately)
