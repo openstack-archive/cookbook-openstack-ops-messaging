@@ -43,8 +43,6 @@ else
   node.override['rabbitmq']['port'] = rabbit_endpoint.port
 end
 node.override['rabbitmq']['address'] = listen_address
-node.override['rabbitmq']['default_user'] = user
-node.override['rabbitmq']['default_pass'] = pass
 
 # Clustering
 if node['openstack']['mq']['cluster']
@@ -59,6 +57,8 @@ end
 include_recipe 'rabbitmq'
 include_recipe 'rabbitmq::mgmt_console'
 
+# TODO(mrv) This could be removed once support for this is added to the rabbitmq cookbook.
+# Issue: https://github.com/kennonkwok/rabbitmq/issues/136
 rabbitmq_user 'remove rabbit guest user' do
   user 'guest'
   action :delete

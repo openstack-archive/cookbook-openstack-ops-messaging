@@ -15,8 +15,6 @@ describe 'openstack-ops-messaging::rabbitmq-server' do
       expect(chef_run.node['openstack']['mq']['rabbitmq']['use_ssl']).to be_falsey
       expect(chef_run.node['rabbitmq']['port']).to eq(5672)
       expect(chef_run.node['rabbitmq']['address']).to eq('127.0.0.1')
-      expect(chef_run.node['rabbitmq']['default_user']).to eq('guest')
-      expect(chef_run.node['rabbitmq']['default_pass']).to eq('rabbit-pass')
       expect(chef_run.node['rabbitmq']['use_distro_version']).to be_truthy
     end
 
