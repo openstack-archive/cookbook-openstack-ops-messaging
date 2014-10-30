@@ -9,6 +9,7 @@ This file is used to list changes made in each version of cookbook-openstack-ops
 * No need to push our rabbit user/password to rabbit cookbook
 * Add a temp workaround for an issue #153 in rabbit cookbook to notify
   rabbitmq-server to restart immediately.
+* Add another workaround for the issue #153 in rabbit cookbook.
 
 ## 10.0.0
 * Upgrading to Juno

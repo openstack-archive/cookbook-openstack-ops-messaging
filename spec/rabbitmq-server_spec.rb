@@ -125,6 +125,14 @@ describe 'openstack-ops-messaging::rabbitmq-server' do
           ).with(user: 'not-a-guest', tag: 'administrator')
         end
 
+        describe 'template rabbitmq-env.conf notifies immediately' do
+          let(:template) { chef_run.template('/etc/rabbitmq/rabbitmq-env.conf') }
+
+          it 'sends the specific notification to the service immediately' do
+            expect(template).to notify('service[rabbitmq-server]').to(:restart).immediately
+          end
+        end
+
         describe 'notifies immediately' do
           let(:template) { chef_run.template('/etc/rabbitmq/rabbitmq.config') }
 
