@@ -9,7 +9,8 @@ This file is used to list changes made in each version of cookbook-openstack-ops
 * No need to push our rabbit user/password to rabbit cookbook
 * Add a temp workaround for an issue #153 in rabbit cookbook to notify
   rabbitmq-server to restart immediately.
-* Add another workaround for the issue #153 in rabbit cookbook.
+* Add another workaround for the issue #153 in rabbit cookbook
+* Allow cluster_disk_nodes not to be set to allow on-the-fly mq clusters
 
 ## 10.0.0
 * Upgrading to Juno

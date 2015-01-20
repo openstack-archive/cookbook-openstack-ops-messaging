@@ -21,6 +21,11 @@
 
 default['openstack']['mq']['cluster'] = false
 
+# Allow cluster_disk_nodes to be optionally set based upon a node role search.
+# If set to false, mq cluster nodes can be added on-the-fly using the cluster command.
+# see https://www.rabbitmq.com/clustering.html
+default['openstack']['mq']['search_for_cluster_disk_nodes'] = true
+
 if platform_family?('debian', 'suse')
   override['rabbitmq']['use_distro_version'] = true
 end

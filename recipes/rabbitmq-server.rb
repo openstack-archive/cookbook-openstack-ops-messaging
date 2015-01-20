@@ -48,10 +48,12 @@ node.override['rabbitmq']['address'] = listen_address
 if node['openstack']['mq']['cluster']
   node.override['rabbitmq']['cluster'] = node['openstack']['mq']['cluster']
   node.override['rabbitmq']['erlang_cookie'] = get_password 'service', 'rabbit_cookie'
-  qs = "roles:#{node['openstack']['mq']['server_role']} AND chef_environment:#{node.chef_environment}"
-  node.override['rabbitmq']['cluster_disk_nodes'] = search(:node, qs).map do |n|
-    "#{user}@#{n['hostname']}"
-  end.sort
+  if node['openstack']['mq']['search_for_cluster_disk_nodes']
+    qs = "roles:#{node['openstack']['mq']['server_role']} AND chef_environment:#{node.chef_environment}"
+    node.override['rabbitmq']['cluster_disk_nodes'] = search(:node, qs).map do |n|
+      "#{user}@#{n['hostname']}"
+    end.sort
+  end
 end
 
 include_recipe 'rabbitmq'

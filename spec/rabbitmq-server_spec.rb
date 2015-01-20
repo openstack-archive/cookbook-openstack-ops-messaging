@@ -69,6 +69,11 @@ describe 'openstack-ops-messaging::rabbitmq-server' do
           ['guest@host1', 'guest@host2']
         )
       end
+
+      it 'does not search for cluster_disk_nodes' do
+        node.set['openstack']['mq']['search_for_cluster_disk_nodes'] = false
+        expect(chef_run.node['rabbitmq']['cluster_disk_nodes']).to eq([])
+      end
     end
 
     it 'includes rabbit recipes' do
