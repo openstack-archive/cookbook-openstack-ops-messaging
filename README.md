@@ -80,6 +80,7 @@ License and Author
 | **Author**           |  Ionut Artarisi (<iartarisi@suse.cz>)              |
 | **Author**           |  JieHua Jin (<jinjhua@cn.ibm.com>)                 |
 | **Author**           |  Mark Vanderwiel (<vanderwl@us.ibm.com>)           |
+| **Author**           |  Jan Klare (<j.klare@x-ion.de>)                    |
 |                      |                                                    |
 | **Copyright**        |  Copyright (c) 2013, Opscode, Inc.                 |
 | **Copyright**        |  Copyright (c) 2013, Craig Tracey                  |
