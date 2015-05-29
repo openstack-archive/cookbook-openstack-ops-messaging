@@ -1,17 +1,17 @@
 # encoding: UTF-8
-name              'openstack-ops-messaging'
-maintainer       'openstack-chef'
+name 'openstack-ops-messaging'
+maintainer 'openstack-chef'
 maintainer_email 'opscode-chef-openstack@googlegroups.com'
-license           'Apache 2.0'
-description       'Provides the shared messaging configuration for Chef for OpenStack.'
-version           '11.0.0'
+license 'Apache 2.0'
+description 'Provides the shared messaging configuration for Chef for OpenStack.'
+version '11.0.0'
 
 recipe 'server', 'Installs and configures server packages for messaging queue used by the deployment.'
 recipe 'rabbitmq-server', 'Installs and configures RabbitMQ and is called via the server recipe'
 
-%w{ fedora ubuntu redhat centos suse }.each do |os|
+%w(fedora ubuntu redhat centos suse).each do |os|
   supports os
 end
 
 depends 'openstack-common', '>= 11.0.0'
-depends 'rabbitmq', '~> 3.12'
+depends 'rabbitmq', '~> 3.13'

@@ -32,9 +32,9 @@ shared_context 'ops_messaging_stubs' do
     allow_any_instance_of(Chef::Recipe).to receive(:search)
       .with(:node, 'roles:os-ops-messaging AND chef_environment:_default')
       .and_return [
-      { 'hostname' => 'host2' },
-      { 'hostname' => 'host1' }
-    ]
+        { 'hostname' => 'host2' },
+        { 'hostname' => 'host1' }
+      ]
     allow_any_instance_of(Chef::Recipe).to receive(:get_password)
       .with('user', anything)
       .and_return 'rabbit-pass'
