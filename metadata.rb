@@ -4,7 +4,7 @@ maintainer 'openstack-chef'
 maintainer_email 'opscode-chef-openstack@googlegroups.com'
 license 'Apache 2.0'
 description 'Provides the shared messaging configuration for Chef for OpenStack.'
-version '11.0.0'
+version '11.1.0'
 
 recipe 'server', 'Installs and configures server packages for messaging queue used by the deployment.'
 recipe 'rabbitmq-server', 'Installs and configures RabbitMQ and is called via the server recipe'
@@ -14,4 +14,4 @@ recipe 'rabbitmq-server', 'Installs and configures RabbitMQ and is called via th
 end
 
 depends 'openstack-common', '>= 11.0.0'
-depends 'rabbitmq', '~> 3.13'
+depends 'rabbitmq', '~> 4.0'
