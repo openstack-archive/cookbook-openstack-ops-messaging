@@ -13,7 +13,7 @@ describe 'openstack-ops-messaging::rabbitmq-server' do
       expect(chef_run.node['openstack']['endpoints']['mq']['port']).to eq('5672')
       expect(chef_run.node['openstack']['mq']['listen']).to eq('127.0.0.1')
       expect(chef_run.node['openstack']['mq']['rabbitmq']['use_ssl']).to be_falsey
-      expect(chef_run.node['rabbitmq']['port']).to eq(5672)
+      expect(chef_run.node['rabbitmq']['port']).to eq('5672')
       expect(chef_run.node['rabbitmq']['address']).to eq('127.0.0.1')
       expect(chef_run.node['rabbitmq']['use_distro_version']).to be_truthy
     end
@@ -36,13 +36,12 @@ describe 'openstack-ops-messaging::rabbitmq-server' do
     describe 'rabbit ssl' do
       before do
         node.set['openstack']['mq']['rabbitmq']['use_ssl'] = true
+        node.set['openstack']['endpoints']['mq']['port'] = '1234'
       end
 
       it 'overrides rabbit ssl attributes' do
-        node.set['openstack']['endpoints']['mq']['port'] = '5671'
-
         expect(chef_run.node['openstack']['mq']['rabbitmq']['use_ssl']).to be_truthy
-        expect(chef_run.node['rabbitmq']['ssl_port']).to eq(5671)
+        expect(chef_run.node['rabbitmq']['ssl_port']).to eq('1234')
         expect(chef_run.node['rabbitmq']['port']).to be_nil
       end
     end
@@ -128,22 +127,6 @@ describe 'openstack-ops-messaging::rabbitmq-server' do
           expect(chef_run).to set_tags_rabbitmq_user(
             'set rabbit administrator tag'
           ).with(user: 'not-a-guest', tag: 'administrator')
-        end
-
-        describe 'template rabbitmq-env.conf notifies immediately' do
-          let(:template) { chef_run.template('/etc/rabbitmq/rabbitmq-env.conf') }
-
-          it 'sends the specific notification to the service immediately' do
-            expect(template).to notify('service[rabbitmq-server]').to(:restart).immediately
-          end
-        end
-
-        describe 'notifies immediately' do
-          let(:template) { chef_run.template('/etc/rabbitmq/rabbitmq.config') }
-
-          it 'sends the specific notification to the service immediately' do
-            expect(template).to notify('service[rabbitmq-server]').to(:restart).immediately
-          end
         end
       end
     end

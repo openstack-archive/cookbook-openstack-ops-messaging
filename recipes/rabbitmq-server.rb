@@ -20,22 +20,26 @@
 # limitations under the License.
 #
 
-class ::Chef::Recipe # rubocop:disable Documentation
+class ::Chef::Recipe
   include ::Openstack
 end
 
 user = node['openstack']['mq']['user']
 pass = get_password 'user', user
 vhost = node['openstack']['mq']['vhost']
-rabbit_endpoint = endpoint 'mq'
-listen_address = rabbit_endpoint.host
+rabbit_endpoint = node['openstack']['endpoints']['mq']
+bind_interface = rabbit_endpoint.bind_interface
+if bind_interface
+  listen_address = address_for bind_interface
+else
+  listen_address = rabbit_endpoint.host
+end
 
 # Used by OpenStack#rabbit_servers/#rabbit_server
 node.set['openstack']['mq']['listen'] = listen_address
-
 if node['openstack']['mq']['rabbitmq']['use_ssl']
   if node['rabbitmq']['ssl_port'] != rabbit_endpoint.port
-    node.override['rabbitmq']['port'] = rabbit_endpoint.port
+    node.override['rabbitmq']['ssl_port'] = rabbit_endpoint.port
   else
     Chef::Log.error 'Unable to listen on the port #{rabbit_endpoint.port} for RabbitMQ TCP, which is listened on by SSL!'
   end
@@ -64,27 +68,23 @@ include_recipe 'rabbitmq::mgmt_console'
 rabbitmq_user 'remove rabbit guest user' do
   user 'guest'
   action :delete
-
   not_if { user == 'guest' }
 end
 
 rabbitmq_user 'add openstack rabbit user' do
   user user
   password pass
-
   action :add
 end
 
 rabbitmq_user 'change openstack rabbit user password' do
   user user
   password pass
-
   action :change_password
 end
 
 rabbitmq_vhost 'add openstack rabbit vhost' do
   vhost vhost
-
   action :add
 end
 
@@ -99,14 +99,5 @@ end
 rabbitmq_user 'set rabbit administrator tag' do
   user user
   tag 'administrator'
-
   action :set_tags
 end
-
-# TODO(wenchma) This could be removed once the issue is fixed in rabbitmq cookbook.
-# Issue: https://github.com/kennonkwok/rabbitmq/issues/153
-# Notifies rabbitmq-server service restart.
-r = resources(template: "#{node['rabbitmq']['config_root']}/rabbitmq-env.conf")
-r.notifies(:restart, "service[#{node['rabbitmq']['service_name']}]", :immediately)
-r = resources(template: "#{node['rabbitmq']['config_root']}/rabbitmq.config")
-r.notifies(:restart, "service[#{node['rabbitmq']['service_name']}]", :immediately)
