@@ -27,34 +27,31 @@ end
 user = node['openstack']['mq']['user']
 pass = get_password 'user', user
 vhost = node['openstack']['mq']['vhost']
-rabbit_endpoint = node['openstack']['endpoints']['mq']
-bind_interface = rabbit_endpoint.bind_interface
-if bind_interface
-  listen_address = address_for bind_interface
-else
-  listen_address = rabbit_endpoint.host
-end
+bind_mq = node['openstack']['bind_service']['mq']
+bind_mq_address = bind_address bind_mq
 
 # Used by OpenStack#rabbit_servers/#rabbit_server
-node.set['openstack']['mq']['listen'] = listen_address
+node.set['openstack']['mq']['listen'] = bind_mq_address
 if node['openstack']['mq']['rabbitmq']['use_ssl']
-  if node['rabbitmq']['ssl_port'] != rabbit_endpoint.port
-    node.override['rabbitmq']['ssl_port'] = rabbit_endpoint.port
+  if node['rabbitmq']['ssl_port'] != bind_mq.port
+    node.normal['rabbitmq']['ssl_port'] = bind_mq.port
   else
-    Chef::Log.error 'Unable to listen on the port #{rabbit_endpoint.port} for RabbitMQ TCP, which is listened on by SSL!'
+    Chef::Log.error "Unable to listen on the port #{bind_mq.port} for RabbitMQ TCP, which is listened on by SSL!"
   end
 else
-  node.override['rabbitmq']['port'] = rabbit_endpoint.port
+  node.normal['rabbitmq']['port'] = bind_mq.port
 end
-node.override['rabbitmq']['address'] = listen_address
+node.normal['rabbitmq']['address'] = bind_mq_address
+node.normal['rabbitmq']['nodename'] = "#{user}@#{node['hostname']}"
 
 # Clustering
 if node['openstack']['mq']['cluster']
-  node.override['rabbitmq']['cluster'] = node['openstack']['mq']['cluster']
-  node.override['rabbitmq']['erlang_cookie'] = get_password 'service', 'rabbit_cookie'
+  node.normal['rabbitmq']['clustering']['enable'] = node['openstack']['mq']['cluster']
+  node.normal['rabbitmq']['erlang_cookie'] = get_password 'service', 'rabbit_cookie'
   if node['openstack']['mq']['search_for_cluster_disk_nodes']
-    qs = "roles:#{node['openstack']['mq']['server_role']} AND chef_environment:#{node.chef_environment}"
-    node.override['rabbitmq']['cluster_disk_nodes'] = search(:node, qs).map do |n|
+    qs = "recipes:openstack-ops-messaging\\:\\:rabbitmq-server AND chef_environment:#{node.chef_environment}"
+    node.normal['rabbitmq']['clustering']['use_auto_clustering'] = true
+    node.normal['rabbitmq']['clustering']['cluster_nodes'] = search(:node, qs).map do |n|
       "#{user}@#{n['hostname']}"
     end.sort
   end

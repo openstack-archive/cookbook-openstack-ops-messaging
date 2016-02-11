@@ -30,7 +30,7 @@ shared_context 'ops_messaging_stubs' do
       .with('eth0')
       .and_return '33.44.55.66'
     allow_any_instance_of(Chef::Recipe).to receive(:search)
-      .with(:node, 'roles:os-ops-messaging AND chef_environment:_default')
+      .with(:node, 'recipes:openstack-ops-messaging\\:\\:rabbitmq-server AND chef_environment:_default')
       .and_return [
         { 'hostname' => 'host2' },
         { 'hostname' => 'host1' }
