@@ -2,6 +2,8 @@
 name 'openstack-ops-messaging'
 maintainer 'openstack-chef'
 maintainer_email 'openstack-dev@lists.openstack.org'
+issues_url 'https://launchpad.net/openstack-chef' if respond_to?(:issues_url)
+source_url 'https://github.com/openstack/cookbook-openstack-ops-messaging' if respond_to?(:source_url)
 license 'Apache 2.0'
 description 'Provides the shared messaging configuration for Chef for OpenStack.'
 version '13.0.0'
