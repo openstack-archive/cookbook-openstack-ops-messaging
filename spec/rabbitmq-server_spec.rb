@@ -62,7 +62,7 @@ describe 'openstack-ops-messaging::rabbitmq-server' do
 
       it 'overrides and sorts cluster_disk_nodes' do
         expect(chef_run.node['rabbitmq']['clustering']['cluster_nodes']).to eq(
-          ['guest@host1', 'guest@host2']
+          [{ 'name' => 'guest@host1' }, { 'name' => 'guest@host2' }]
         )
       end
 
