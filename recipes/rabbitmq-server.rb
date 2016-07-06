@@ -51,9 +51,10 @@ if node['openstack']['mq']['cluster']
   if node['openstack']['mq']['search_for_cluster_disk_nodes']
     qs = "recipes:openstack-ops-messaging\\:\\:rabbitmq-server AND chef_environment:#{node.chef_environment}"
     node.normal['rabbitmq']['clustering']['use_auto_clustering'] = true
-    node.normal['rabbitmq']['clustering']['cluster_nodes'] = search(:node, qs).map do |n|
-      "#{user}@#{n['hostname']}"
-    end.sort
+    node.normal['rabbitmq']['clustering']['cluster_nodes'] =
+      search(:node, qs).sort_by { |n| n['hostname'] }.map do |n|
+        { name: "#{user}@#{n['hostname']}" }
+      end
   end
 end
 
