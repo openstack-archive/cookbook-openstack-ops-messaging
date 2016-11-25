@@ -1,3 +1,10 @@
+Team and repository tags
+========================
+
+[![Team and repository tags](http://governance.openstack.org/badges/cookbook-openstack-ops-messaging.svg)](http://governance.openstack.org/reference/tags/index.html)
+
+<!-- Change things from this point on -->
+
 # Description #
 
 This cookbook provides shared message queue configuration for the OpenStack deployment provided by Chef for OpenStack. The [OpenStack chef-repo](http://github.com/openstack/openstack-chef-repo) contains documentation for using this cookbook in the context of a full OpenStack deployment. It currently supports RabbitMQ and will soon other queues.
