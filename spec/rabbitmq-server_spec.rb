@@ -62,7 +62,7 @@ describe 'openstack-ops-messaging::rabbitmq-server' do
 
       it 'overrides and sorts cluster_disk_nodes' do
         expect(chef_run.node['rabbitmq']['clustering']['cluster_nodes']).to eq(
-          [{ 'name' => 'guest@host1' }, { 'name' => 'guest@host2' }]
+          [{ 'name' => 'openstack@host1' }, { 'name' => 'openstack@host2' }]
         )
       end
 
@@ -79,8 +79,8 @@ describe 'openstack-ops-messaging::rabbitmq-server' do
 
     describe 'lwrps' do
       context 'default mq attributes' do
-        it 'does not delete the guest user' do
-          expect(chef_run).not_to delete_rabbitmq_user('remove rabbit guest user')
+        it 'does delete the guest user' do
+          expect(chef_run).to delete_rabbitmq_user('remove rabbit guest user')
         end
       end
 
