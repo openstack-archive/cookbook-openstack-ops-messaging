@@ -1,12 +1,9 @@
-# encoding: UTF-8
-name 'openstack-ops-messaging'
-maintainer 'openstack-chef'
+name             'openstack-ops-messaging'
+maintainer       'openstack-chef'
 maintainer_email 'openstack-dev@lists.openstack.org'
-issues_url 'https://launchpad.net/openstack-chef' if respond_to?(:issues_url)
-source_url 'https://github.com/openstack/cookbook-openstack-ops-messaging' if respond_to?(:source_url)
-license 'Apache 2.0'
-description 'Provides the shared messaging configuration for Chef for OpenStack.'
-version '15.0.0'
+license          'Apache 2.0'
+description      'Provides the shared messaging configuration for Chef for OpenStack.'
+version          '15.0.0'
 
 recipe 'server', 'Installs and configures server packages for messaging queue used by the deployment.'
 recipe 'rabbitmq-server', 'Installs and configures RabbitMQ and is called via the server recipe'
@@ -17,3 +14,7 @@ end
 
 depends 'openstack-common', '>= 15.0.0'
 depends 'rabbitmq', '~> 4.10'
+
+issues_url 'https://launchpad.net/openstack-chef' if respond_to?(:issues_url)
+source_url 'https://github.com/openstack/cookbook-openstack-ops-messaging' if respond_to?(:source_url)
+chef_version '>= 12.5' if respond_to?(:chef_version)
