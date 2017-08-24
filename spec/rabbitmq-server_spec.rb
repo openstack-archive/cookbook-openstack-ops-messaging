@@ -46,7 +46,7 @@ describe 'openstack-ops-messaging::rabbitmq-server' do
     describe 'cluster' do
       before do
         node.set['openstack']['mq'] = {
-          'cluster' => true
+          'cluster' => true,
         }
       end
 
