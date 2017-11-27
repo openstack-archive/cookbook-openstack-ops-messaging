@@ -1,7 +1,7 @@
 name             'openstack-ops-messaging'
 maintainer       'openstack-chef'
 maintainer_email 'openstack-dev@lists.openstack.org'
-license          'Apache 2.0'
+license          'Apache-2.0'
 description      'Provides the shared messaging configuration for Chef for OpenStack.'
 version          '16.0.0'
 
@@ -13,7 +13,7 @@ recipe 'rabbitmq-server', 'Installs and configures RabbitMQ and is called via th
 end
 
 depends 'openstack-common', '>= 16.0.0'
-depends 'rabbitmq', '~> 4.10'
+depends 'rabbitmq'
 
 issues_url 'https://launchpad.net/openstack-chef' if respond_to?(:issues_url)
 source_url 'https://github.com/openstack/cookbook-openstack-ops-messaging' if respond_to?(:source_url)

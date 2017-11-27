@@ -7,18 +7,13 @@ ChefSpec::Coverage.start! { add_filter 'openstack-ops-messaging' }
 LOG_LEVEL = :fatal
 REDHAT_OPTS = {
   platform: 'redhat',
-  version: '7.1',
+  version: '7.3',
   log_level: LOG_LEVEL,
 }.freeze
 UBUNTU_OPTS = {
   platform: 'ubuntu',
-  version: '14.04',
+  version: '16.04',
   log_level: LOG_LEVEL,
-}.freeze
-SUSE_OPTS = {
-  platform: 'suse',
-  version: '11.3',
-  log_level: ::LOG_LEVEL,
 }.freeze
 
 shared_context 'ops_messaging_stubs' do
@@ -27,7 +22,7 @@ shared_context 'ops_messaging_stubs' do
       .with('lo')
       .and_return '127.0.0.1'
     allow_any_instance_of(Chef::Recipe).to receive(:address_for)
-      .with('eth0')
+      .with('enp0s3')
       .and_return '33.44.55.66'
     allow_any_instance_of(Chef::Recipe).to receive(:search)
       .with(:node, 'recipes:openstack-ops-messaging\\:\\:rabbitmq-server AND chef_environment:_default')

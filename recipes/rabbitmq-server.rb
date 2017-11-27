@@ -28,18 +28,19 @@ user = node['openstack']['mq']['user']
 pass = get_password 'user', user
 vhost = node['openstack']['mq']['vhost']
 bind_mq = node['openstack']['bind_service']['mq']
+bind_mq = bind_mq
 bind_mq_address = bind_address bind_mq
 
 # Used by OpenStack#rabbit_servers/#rabbit_server
-node.set['openstack']['mq']['listen'] = bind_mq_address
+node.normal['openstack']['mq']['listen'] = bind_mq_address
 if node['openstack']['mq']['rabbitmq']['use_ssl']
-  if node['rabbitmq']['ssl_port'] != bind_mq.port
-    node.normal['rabbitmq']['ssl_port'] = bind_mq.port
+  if node['rabbitmq']['ssl_port'] != bind_mq['port']
+    node.normal['rabbitmq']['ssl_port'] = bind_mq['port']
   else
-    Chef::Log.error "Unable to listen on the port #{bind_mq.port} for RabbitMQ TCP, which is listened on by SSL!"
+    Chef::Log.error "Unable to listen on the port #{bind_mq['port']} for RabbitMQ TCP, which is listened on by SSL!"
   end
 else
-  node.normal['rabbitmq']['port'] = bind_mq.port
+  node.normal['rabbitmq']['port'] = bind_mq['port']
 end
 node.normal['rabbitmq']['address'] = bind_mq_address
 node.normal['rabbitmq']['nodename'] = "#{user}@#{node['hostname']}"
@@ -60,14 +61,6 @@ end
 
 include_recipe 'rabbitmq'
 include_recipe 'rabbitmq::mgmt_console'
-
-# TODO(mrv) This could be removed once support for this is added to the rabbitmq cookbook.
-# Issue: https://github.com/kennonkwok/rabbitmq/issues/136
-rabbitmq_user 'remove rabbit guest user' do
-  user 'guest'
-  action :delete
-  not_if { user == 'guest' }
-end
 
 rabbitmq_user 'add openstack rabbit user' do
   user user

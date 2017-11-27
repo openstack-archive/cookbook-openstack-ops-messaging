@@ -19,11 +19,11 @@ describe 'openstack-ops-messaging::rabbitmq-server' do
     end
 
     it 'overrides rabbit and openstack image attributes' do
-      node.set['openstack']['bind_service']['mq']['interface'] = 'eth0'
-      node.set['openstack']['bind_service']['mq']['port'] = '4242'
-      node.set['openstack']['endpoints']['mq']['port'] = '4242'
-      node.set['openstack']['mq']['user'] = 'foo'
-      node.set['openstack']['mq']['vhost'] = '/bar'
+      node.override['openstack']['bind_service']['mq']['interface'] = 'enp0s3'
+      node.override['openstack']['bind_service']['mq']['port'] = '4242'
+      node.override['openstack']['endpoints']['mq']['port'] = '4242'
+      node.override['openstack']['mq']['user'] = 'foo'
+      node.override['openstack']['mq']['vhost'] = '/bar'
       expect(chef_run.node['openstack']['mq']['listen']).to eq('33.44.55.66')
       expect(chef_run.node['openstack']['mq']['image']['rabbit']['port']).to eq('4242')
       expect(chef_run.node['openstack']['mq']['image']['rabbit']['userid']).to eq('foo')
@@ -32,8 +32,8 @@ describe 'openstack-ops-messaging::rabbitmq-server' do
 
     describe 'rabbit ssl' do
       before do
-        node.set['openstack']['mq']['rabbitmq']['use_ssl'] = true
-        node.set['openstack']['bind_service']['mq']['port'] = '1234'
+        node.override['openstack']['mq']['rabbitmq']['use_ssl'] = true
+        node.override['openstack']['bind_service']['mq']['port'] = '1234'
       end
 
       it 'overrides rabbit ssl attributes' do
@@ -45,7 +45,7 @@ describe 'openstack-ops-messaging::rabbitmq-server' do
 
     describe 'cluster' do
       before do
-        node.set['openstack']['mq'] = {
+        node.override['openstack']['mq'] = {
           'cluster' => true,
         }
       end
@@ -67,7 +67,7 @@ describe 'openstack-ops-messaging::rabbitmq-server' do
       end
 
       it 'does not search for cluster_disk_nodes' do
-        node.set['openstack']['mq']['search_for_cluster_disk_nodes'] = false
+        node.override['openstack']['mq']['search_for_cluster_disk_nodes'] = false
         expect(chef_run.node['rabbitmq']['clustering']['cluster_nodes']).to eq([])
       end
     end
@@ -78,22 +78,10 @@ describe 'openstack-ops-messaging::rabbitmq-server' do
     end
 
     describe 'lwrps' do
-      context 'default mq attributes' do
-        it 'does delete the guest user' do
-          expect(chef_run).to delete_rabbitmq_user('remove rabbit guest user')
-        end
-      end
-
       context 'custom mq attributes' do
         before do
-          node.set['openstack']['mq']['user'] = 'not-a-guest'
-          node.set['openstack']['mq']['vhost'] = '/foo'
-        end
-
-        it 'deletes the guest user' do
-          expect(chef_run).to delete_rabbitmq_user(
-            'remove rabbit guest user'
-          ).with(user: 'guest')
+          node.override['openstack']['mq']['user'] = 'not-a-guest'
+          node.override['openstack']['mq']['vhost'] = '/foo'
         end
 
         it 'adds openstack rabbit user' do
