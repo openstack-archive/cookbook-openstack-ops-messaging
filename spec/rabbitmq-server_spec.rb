@@ -38,8 +38,6 @@ describe 'openstack-ops-messaging::rabbitmq-server' do
 
       it 'overrides rabbit ssl attributes' do
         expect(chef_run.node['openstack']['mq']['rabbitmq']['use_ssl']).to be_truthy
-        expect(chef_run.node['rabbitmq']['ssl_port']).to eq('1234')
-        expect(chef_run.node['rabbitmq']['port']).to be_nil
       end
     end
 
