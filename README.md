@@ -9,7 +9,7 @@ Team and repository tags
 
 # Description #
 
-This cookbook provides shared message queue configuration for the OpenStack deployment provided by Chef for OpenStack. The [OpenStack chef-repo](http://github.com/openstack/openstack-chef-repo) contains documentation for using this cookbook in the context of a full OpenStack deployment. It currently supports RabbitMQ and will soon other queues.
+This cookbook provides shared message queue configuration for the OpenStack deployment provided by Chef for OpenStack. The [OpenStack chef-repo](http://github.com/openstack/openstack-chef) contains documentation for using this cookbook in the context of a full OpenStack deployment. It currently supports RabbitMQ and will soon other queues.
 
 # Requirements #
 
