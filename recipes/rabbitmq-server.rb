@@ -60,7 +60,13 @@ if node['openstack']['mq']['cluster']
 end
 
 include_recipe 'rabbitmq'
-include_recipe 'rabbitmq::mgmt_console'
+if node['openstack']['mq']['rabbitmq']['enable_mgmt_console']
+  include_recipe 'rabbitmq::mgmt_console'
+else
+  rabbitmq_plugin 'rabbitmq_management' do
+    action :disable
+  end
+end
 
 rabbitmq_user 'add openstack rabbit user' do
   user user

@@ -29,3 +29,6 @@ default['openstack']['mq']['search_for_cluster_disk_nodes'] = true
 if platform_family?('debian', 'suse')
   override['rabbitmq']['use_distro_version'] = true
 end
+
+# Enable the rabbitmq management plugin by default
+default['openstack']['mq']['rabbitmq']['enable_mgmt_console'] = true
