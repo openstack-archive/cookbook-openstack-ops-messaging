@@ -3,7 +3,7 @@ maintainer       'openstack-chef'
 maintainer_email 'openstack-dev@lists.openstack.org'
 license          'Apache-2.0'
 description      'Provides the shared messaging configuration for Chef for OpenStack.'
-version          '17.0.1'
+version          '17.0.2'
 
 recipe 'server', 'Installs and configures server packages for messaging queue used by the deployment.'
 recipe 'rabbitmq-server', 'Installs and configures RabbitMQ and is called via the server recipe'
@@ -13,8 +13,7 @@ recipe 'rabbitmq-server', 'Installs and configures RabbitMQ and is called via th
 end
 
 depends 'openstack-common', '>= 17.0.0'
-# Note(frickler): Workaround for https://github.com/rabbitmq/chef-cookbook/issues/508
-depends 'rabbitmq', '5.7.0'
+depends 'rabbitmq', '~> 5.7'
 
 issues_url 'https://launchpad.net/openstack-chef' if respond_to?(:issues_url)
 source_url 'https://github.com/openstack/cookbook-openstack-ops-messaging' if respond_to?(:source_url)
