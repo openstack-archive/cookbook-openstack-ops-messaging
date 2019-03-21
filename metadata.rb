@@ -13,8 +13,7 @@ recipe 'rabbitmq-server', 'Installs and configures RabbitMQ and is called via th
 end
 
 depends 'openstack-common', '>= 18.0.0'
-# Note(frickler): Workaround for https://github.com/rabbitmq/chef-cookbook/issues/508
-depends 'rabbitmq', '5.7.0'
+depends 'rabbitmq', '~> 5.7'
 
 issues_url 'https://launchpad.net/openstack-chef' if respond_to?(:issues_url)
 source_url 'https://github.com/openstack/cookbook-openstack-ops-messaging' if respond_to?(:source_url)
