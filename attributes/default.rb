@@ -26,8 +26,9 @@ default['openstack']['mq']['cluster'] = false
 # see https://www.rabbitmq.com/clustering.html
 default['openstack']['mq']['search_for_cluster_disk_nodes'] = true
 
+normal['rabbitmq']['use_distro_version'] = true
+
 if platform_family?('debian', 'suse')
-  normal['rabbitmq']['use_distro_version'] = true
   normal['rabbitmq']['config'] = '/etc/rabbitmq/rabbitmq.config'
 end
 
