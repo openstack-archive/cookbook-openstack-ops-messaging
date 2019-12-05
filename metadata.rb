@@ -5,7 +5,6 @@ license          'Apache-2.0'
 description      'Provides the shared messaging configuration for Chef for OpenStack.'
 version          '18.0.0'
 
-recipe 'server', 'Installs and configures server packages for messaging queue used by the deployment.'
 recipe 'rabbitmq-server', 'Installs and configures RabbitMQ and is called via the server recipe'
 
 %w(ubuntu redhat centos).each do |os|
@@ -15,6 +14,6 @@ end
 depends 'openstack-common', '>= 18.0.0'
 depends 'rabbitmq', '~> 5.7'
 
-issues_url 'https://launchpad.net/openstack-chef' if respond_to?(:issues_url)
-source_url 'https://github.com/openstack/cookbook-openstack-ops-messaging' if respond_to?(:source_url)
-chef_version '>= 12.5' if respond_to?(:chef_version)
+issues_url 'https://launchpad.net/openstack-chef'
+source_url 'https://opendev.org/openstack/cookbook-openstack-ops-messaging'
+chef_version '>= 14.0'

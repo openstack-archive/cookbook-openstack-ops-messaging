@@ -1,6 +1,11 @@
 source 'https://supermarket.chef.io'
 
-metadata
+%w(-common).each do |cookbook|
+  if Dir.exist?("../cookbook-openstack#{cookbook}")
+    cookbook "openstack#{cookbook}", path: "../cookbook-openstack#{cookbook}"
+  else
+    cookbook "openstack#{cookbook}", git: "https://opendev.org/openstack/cookbook-openstack#{cookbook}"
+  end
+end
 
-cookbook 'openstack-common',
-  git: 'https://opendev.org/openstack/cookbook-openstack-common'
+metadata
