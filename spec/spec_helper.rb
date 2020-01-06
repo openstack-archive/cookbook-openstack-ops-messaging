@@ -14,7 +14,7 @@ REDHAT_OPTS = {
 }.freeze
 UBUNTU_OPTS = {
   platform: 'ubuntu',
-  version: '16.04',
+  version: '18.04',
 }.freeze
 
 shared_context 'ops_messaging_stubs' do
