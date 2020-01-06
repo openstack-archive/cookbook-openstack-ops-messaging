@@ -5,7 +5,7 @@ describe 'openstack-ops-messaging::rabbitmq-server' do
   describe 'ubuntu' do
     let(:runner) { ChefSpec::SoloRunner.new(UBUNTU_OPTS) }
     let(:node) { runner.node }
-    let(:chef_run) { runner.converge(described_recipe) }
+    cached(:chef_run) { runner.converge(described_recipe) }
 
     include_context 'ops_messaging_stubs'
 
@@ -18,22 +18,28 @@ describe 'openstack-ops-messaging::rabbitmq-server' do
       expect(chef_run.node['rabbitmq']['use_distro_version']).to be_truthy
     end
 
-    it 'overrides rabbit and openstack image attributes' do
-      node.override['openstack']['bind_service']['mq']['interface'] = 'enp0s3'
-      node.override['openstack']['bind_service']['mq']['port'] = '4242'
-      node.override['openstack']['endpoints']['mq']['port'] = '4242'
-      node.override['openstack']['mq']['user'] = 'foo'
-      node.override['openstack']['mq']['vhost'] = '/bar'
-      expect(chef_run.node['openstack']['mq']['listen']).to eq('33.44.55.66')
-      expect(chef_run.node['openstack']['mq']['image']['rabbit']['port']).to eq('4242')
-      expect(chef_run.node['openstack']['mq']['image']['rabbit']['userid']).to eq('foo')
-      expect(chef_run.node['openstack']['mq']['image']['rabbit']['vhost']).to eq('/bar')
+    context 'override rabbit and openstack image attributes' do
+      cached(:chef_run) do
+        node.override['openstack']['bind_service']['mq']['interface'] = 'enp0s3'
+        node.override['openstack']['bind_service']['mq']['port'] = '4242'
+        node.override['openstack']['endpoints']['mq']['port'] = '4242'
+        node.override['openstack']['mq']['user'] = 'foo'
+        node.override['openstack']['mq']['vhost'] = '/bar'
+        runner.converge(described_recipe)
+      end
+      it 'overrides rabbit and openstack image attributes' do
+        expect(chef_run.node['openstack']['mq']['listen']).to eq('33.44.55.66')
+        expect(chef_run.node['openstack']['mq']['image']['rabbit']['port']).to eq('4242')
+        expect(chef_run.node['openstack']['mq']['image']['rabbit']['userid']).to eq('foo')
+        expect(chef_run.node['openstack']['mq']['image']['rabbit']['vhost']).to eq('/bar')
+      end
     end
 
-    describe 'rabbit ssl' do
-      before do
+    context 'rabbit ssl' do
+      cached(:chef_run) do
         node.override['openstack']['mq']['rabbitmq']['use_ssl'] = true
         node.override['openstack']['bind_service']['mq']['port'] = '1234'
+        runner.converge(described_recipe)
       end
 
       it 'overrides rabbit ssl attributes' do
@@ -41,11 +47,10 @@ describe 'openstack-ops-messaging::rabbitmq-server' do
       end
     end
 
-    describe 'cluster' do
-      before do
-        node.override['openstack']['mq'] = {
-          'cluster' => true,
-        }
+    context 'cluster' do
+      cached(:chef_run) do
+        node.override['openstack']['mq'] = { 'cluster' => true }
+        runner.converge(described_recipe)
       end
 
       it 'overrides cluster' do
@@ -64,9 +69,15 @@ describe 'openstack-ops-messaging::rabbitmq-server' do
         )
       end
 
-      it 'does not search for cluster_disk_nodes' do
-        node.override['openstack']['mq']['search_for_cluster_disk_nodes'] = false
-        expect(chef_run.node['rabbitmq']['clustering']['cluster_nodes']).to eq([])
+      context 'search_for_cluster_disk_nodes false' do
+        cached(:chef_run) do
+          node.override['openstack']['mq'] = { 'cluster' => true }
+          node.override['openstack']['mq']['search_for_cluster_disk_nodes'] = false
+          runner.converge(described_recipe)
+        end
+        it 'does not search for cluster_disk_nodes' do
+          expect(chef_run.node['rabbitmq']['clustering']['cluster_nodes']).to eq([])
+        end
       end
     end
 
@@ -77,9 +88,10 @@ describe 'openstack-ops-messaging::rabbitmq-server' do
 
     describe 'lwrps' do
       context 'custom mq attributes' do
-        before do
+        cached(:chef_run) do
           node.override['openstack']['mq']['user'] = 'not-a-guest'
           node.override['openstack']['mq']['vhost'] = '/foo'
+          runner.converge(described_recipe)
         end
 
         it 'adds openstack rabbit user' do
