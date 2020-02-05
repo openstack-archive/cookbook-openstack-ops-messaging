@@ -18,9 +18,9 @@ and will soon other queues.
 Requirements
 ============
 
-- Chef 14 or higher
-- chefdk 3.2.30 for testing (also includes berkshelf for cookbook
-  dependency resolution)
+- Chef 15 or higher
+- Chef Workstation 0.15.18 for testing (also includes berkshelf for
+  cookbook dependency resolution)
 
 Platforms
 =========
@@ -34,7 +34,7 @@ Cookbooks
 
 The following cookbooks are dependencies:
 
-- 'openstack-common', '>= 18.0.0'
+- 'openstack-common', '>= 19.0.0'
 - 'rabbitmq', '~> 5.7'
 
 Usage
@@ -126,19 +126,19 @@ License and Author
 | **Author**      | Lance Albertson (lance@osuosl.org)        |
 +-----------------+-------------------------------------------+
 
-+-----------------+---------------------------------------------+
-| **Copyright**   | Copyright (c) 2013, Opscode, Inc.           |
-+-----------------+---------------------------------------------+
-| **Copyright**   | Copyright (c) 2013, Craig Tracey            |
-+-----------------+---------------------------------------------+
-| **Copyright**   | Copyright (c) 2013, AT&T Services, Inc.     |
-+-----------------+---------------------------------------------+
-| **Copyright**   | Copyright (c) 2013, SUSE Linux GmbH.        |
-+-----------------+---------------------------------------------+
-| **Copyright**   | Copyright (c) 2013-2014, IBM Corp.          |
-+-----------------+---------------------------------------------+
-| **Copyright**   | Copyright (c) 2019, Oregon State University |
-+-----------------+---------------------------------------------+
++-----------------+--------------------------------------------------+
+| **Copyright**   | Copyright (c) 2013, Opscode, Inc.                |
++-----------------+--------------------------------------------------+
+| **Copyright**   | Copyright (c) 2013, Craig Tracey                 |
++-----------------+--------------------------------------------------+
+| **Copyright**   | Copyright (c) 2013, AT&T Services, Inc.          |
++-----------------+--------------------------------------------------+
+| **Copyright**   | Copyright (c) 2013, SUSE Linux GmbH.             |
++-----------------+--------------------------------------------------+
+| **Copyright**   | Copyright (c) 2013-2014, IBM Corp.               |
++-----------------+--------------------------------------------------+
+| **Copyright**   | Copyright (c) 2019-2020, Oregon State University |
++-----------------+--------------------------------------------------+
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may
 not use this file except in compliance with the License. You may obtain

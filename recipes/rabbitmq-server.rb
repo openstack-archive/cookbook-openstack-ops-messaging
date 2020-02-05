@@ -1,11 +1,11 @@
 # encoding: UTF-8
 #
-# Cookbook Name:: openstack-ops-messaging
+# Cookbook:: openstack-ops-messaging
 # Recipe:: rabbitmq-server
 #
-# Copyright 2013, Opscode, Inc.
-# Copyright 2013, AT&T Services, Inc.
-# Copyright 2013, Craig Tracey <craigtracey@gmail.com>
+# Copyright:: 2013, Opscode, Inc.
+# Copyright:: 2013, AT&T Services, Inc.
+# Copyright:: 2013, Craig Tracey <craigtracey@gmail.com>
 #
 # Licensed under the Apache License, Version 2.0 (the 'License');
 # you may not use this file except in compliance with the License.
@@ -32,27 +32,27 @@ bind_mq = bind_mq
 bind_mq_address = bind_address bind_mq
 
 # Used by OpenStack#rabbit_servers/#rabbit_server
-node.normal['openstack']['mq']['listen'] = bind_mq_address
+node.default['openstack']['mq']['listen'] = bind_mq_address
 if node['openstack']['mq']['rabbitmq']['use_ssl']
   if node['rabbitmq']['ssl_port'] != bind_mq['port']
-    node.normal['rabbitmq']['ssl_port'] = bind_mq['port']
+    node.default['rabbitmq']['ssl_port'] = bind_mq['port']
   else
     Chef::Log.error "Unable to listen on the port #{bind_mq['port']} for RabbitMQ TCP, which is listened on by SSL!"
   end
 else
-  node.normal['rabbitmq']['port'] = bind_mq['port']
+  node.default['rabbitmq']['port'] = bind_mq['port']
 end
-node.normal['rabbitmq']['address'] = bind_mq_address
-node.normal['rabbitmq']['nodename'] = "#{user}@#{node['hostname']}"
+node.default['rabbitmq']['address'] = bind_mq_address
+node.default['rabbitmq']['nodename'] = "#{user}@#{node['hostname']}"
 
 # Clustering
 if node['openstack']['mq']['cluster']
-  node.normal['rabbitmq']['clustering']['enable'] = node['openstack']['mq']['cluster']
-  node.normal['rabbitmq']['erlang_cookie'] = get_password 'service', 'rabbit_cookie'
+  node.default['rabbitmq']['clustering']['enable'] = node['openstack']['mq']['cluster']
+  node.default['rabbitmq']['erlang_cookie'] = get_password 'service', 'rabbit_cookie'
   if node['openstack']['mq']['search_for_cluster_disk_nodes']
     qs = "recipes:openstack-ops-messaging\\:\\:rabbitmq-server AND chef_environment:#{node.chef_environment}"
-    node.normal['rabbitmq']['clustering']['use_auto_clustering'] = true
-    node.normal['rabbitmq']['clustering']['cluster_nodes'] =
+    node.default['rabbitmq']['clustering']['use_auto_clustering'] = true
+    node.default['rabbitmq']['clustering']['cluster_nodes'] =
       search(:node, qs).sort_by { |n| n['hostname'] }.map do |n|
         { name: "#{user}@#{n['hostname']}" }
       end
