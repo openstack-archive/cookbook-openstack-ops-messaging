@@ -71,24 +71,26 @@ end
 rabbitmq_user 'add openstack rabbit user' do
   user user
   password pass
-  action :add
+  sensitive true
 end
 
 rabbitmq_user 'change openstack rabbit user password' do
   user user
   password pass
+  sensitive true
   action :change_password
 end
 
 rabbitmq_vhost 'add openstack rabbit vhost' do
   vhost vhost
-  action :add
+  sensitive true
 end
 
 rabbitmq_user 'set openstack user permissions' do
   user user
   vhost vhost
   permissions '.* .* .*'
+  sensitive true
   action :set_permissions
 end
 
@@ -96,5 +98,6 @@ end
 rabbitmq_user 'set rabbit administrator tag' do
   user user
   tag 'administrator'
+  sensitive true
   action :set_tags
 end

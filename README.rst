@@ -35,7 +35,7 @@ Cookbooks
 The following cookbooks are dependencies:
 
 - 'openstack-common', '>= 19.0.0'
-- 'rabbitmq', '~> 5.7'
+- 'rabbitmq', '~> 5.8'
 
 Usage
 =====
