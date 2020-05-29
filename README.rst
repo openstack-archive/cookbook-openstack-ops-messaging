@@ -19,7 +19,7 @@ Requirements
 ============
 
 - Chef 15 or higher
-- Chef Workstation 0.15.18 for testing (also includes berkshelf for
+- Chef Workstation 0.18.3 for testing (also includes berkshelf for
   cookbook dependency resolution)
 
 Platforms
@@ -34,7 +34,7 @@ Cookbooks
 
 The following cookbooks are dependencies:
 
-- 'openstack-common', '>= 19.0.0'
+- 'openstack-common', '>= 20.0.0'
 - 'rabbitmq', '~> 5.8'
 
 Usage
