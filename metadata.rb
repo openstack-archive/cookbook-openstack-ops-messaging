@@ -10,7 +10,7 @@ version          '20.0.0'
 end
 
 depends 'openstack-common', '>= 20.0.0'
-depends 'rabbitmq', '~> 5.8'
+depends 'rabbitmq', '>= 5.8.5'
 
 issues_url 'https://launchpad.net/openstack-chef'
 source_url 'https://opendev.org/openstack/cookbook-openstack-ops-messaging'
