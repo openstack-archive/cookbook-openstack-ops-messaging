@@ -14,4 +14,4 @@ depends 'rabbitmq', '>= 5.8.5'
 
 issues_url 'https://launchpad.net/openstack-chef'
 source_url 'https://opendev.org/openstack/cookbook-openstack-ops-messaging'
-chef_version '>= 15.0'
+chef_version '>= 16.0'
